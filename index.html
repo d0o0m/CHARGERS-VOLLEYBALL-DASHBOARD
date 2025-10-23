@@ -725,67 +725,6 @@ tr:hover {
   }
 }
 
-/* Hamburger Menu Styles */
-.hamburger-menu {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 1000;
-  cursor: pointer;
-  background: #1e293b;
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid #3b82f6;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-}
-
-.hamburger-icon {
-  width: 18px;
-  height: 14px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.hamburger-icon span {
-  display: block;
-  width: 100%;
-  height: 2px;
-  background: #3b82f6;
-  border-radius: 1px;
-}
-
-.menu-dropdown {
-  position: absolute;
-  top: 45px;
-  right: 10px;
-  background: #1e293b;
-  border: 1px solid #3b82f6;
-  border-radius: 6px;
-  padding: 4px;
-  z-index: 999;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-  min-width: 120px;
-}
-
-.menu-dropdown.hidden {
-  display: none;
-}
-
-.menu-item {
-  padding: 8px 12px;
-  color: #fff;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.menu-item:hover {
-  background: #334155;
-}
-
 .instructions-modal {
   position: fixed;
   top: 0;
@@ -860,14 +799,19 @@ tr:hover {
   background: #2563eb;
 }
 
+#instructionsBarBtn:hover {
+  background: #1e293b;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+#instructionsBarBtn:active {
+  transform: translateY(0);
+}
+
 </style>
 </head>
 <body>
-
-<!-- Menu Dropdown (outside banner for proper positioning) -->
-<div class="menu-dropdown hidden" id="menuDropdown">
-  <div class="menu-item" id="instructionsMenuItem">Instructions</div>
-</div>
 
 <!-- Instructions Modal -->
 <div class="instructions-modal hidden" id="instructionsModal">
@@ -943,15 +887,6 @@ tr:hover {
 </div>
 
 <div class="team-banner">
-  <!-- Hamburger Menu -->
-  <div class="hamburger-menu" id="hamburgerMenu">
-    <div class="hamburger-icon">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  </div>
-  
   <img src="https://i.imgur.com/placeholder.png" alt="Chargers Volleyball" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
   <div style="display: none; color: #fff; font-size: 48px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
     CHARGERS VOLLEYBALL<br>
@@ -985,12 +920,12 @@ tr:hover {
     </button>
   </div>
   
-  <div style="background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid #3b82f6;">
-    <div style="font-size: 13px; font-weight: 600; color: #3b82f6; margin-bottom: 6px;">
-      Log Player Stats
+  <div style="background: #0f172a; padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid #3b82f6; cursor: pointer;" id="instructionsBarBtn">
+    <div style="font-size: 14px; font-weight: 600; color: #3b82f6; text-align: center;">
+      📋 INSTRUCTIONS
     </div>
-    <div style="font-size: 11px; color: #94a3b8; line-height: 1.5;">
-      Record player actions anytime during the match. Stats are tracked separately from scoring. After selecting an action type and player, click "Log Event" to save.
+    <div style="font-size: 11px; color: #94a3b8; text-align: center; margin-top: 4px;">
+      Tap to view app guide
     </div>
   </div>
   
@@ -1383,9 +1318,8 @@ function setupEventListeners() {
   document.getElementById('runThreshold').addEventListener('change', (e) => updateThreshold('run', e.target.value));
   document.getElementById('ueThreshold').addEventListener('change', (e) => updateThreshold('ue', e.target.value));
   
-  // Hamburger menu listeners
-  document.getElementById('hamburgerMenu').addEventListener('click', toggleHamburgerMenu);
-  document.getElementById('instructionsMenuItem').addEventListener('click', openInstructions);
+  // Instructions button listener
+  document.getElementById('instructionsBarBtn').addEventListener('click', openInstructions);
   document.getElementById('closeInstructionsBtn').addEventListener('click', closeInstructions);
   document.getElementById('instructionsModal').addEventListener('click', (e) => {
     if (e.target.id === 'instructionsModal') closeInstructions();
@@ -1401,12 +1335,6 @@ function setupEventListeners() {
   window.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal')) {
       e.target.classList.remove('active');
-    }
-    // Close hamburger dropdown if clicking outside
-    const hamburgerMenu = document.getElementById('hamburgerMenu');
-    const menuDropdown = document.getElementById('menuDropdown');
-    if (!hamburgerMenu.contains(e.target) && !menuDropdown.contains(e.target)) {
-      menuDropdown.classList.add('hidden');
     }
   });
 }
@@ -3471,13 +3399,7 @@ function exportCSV() {
   URL.revokeObjectURL(url);
 }
 
-function toggleHamburgerMenu() {
-  const dropdown = document.getElementById('menuDropdown');
-  dropdown.classList.toggle('hidden');
-}
-
 function openInstructions() {
-  document.getElementById('menuDropdown').classList.add('hidden');
   document.getElementById('instructionsModal').classList.remove('hidden');
 }
 
