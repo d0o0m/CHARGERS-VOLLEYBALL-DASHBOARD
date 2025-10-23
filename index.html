@@ -1,0 +1,3427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Volleyball Stats Dashboard</title>
+
+<!-- Emoji Favicon - Volleyball 🏐 -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏐</text></svg>">
+
+<!-- Apple Touch Icon for iOS devices -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏐</text></svg>">
+
+<!-- Theme color for mobile browsers -->
+<meta name="theme-color" content="#c62828">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Volleyball">
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #0a0a0a;
+  color: #fff;
+  padding: 0;
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
+
+.team-banner {
+  width: 100%;
+  background: linear-gradient(135deg, #c62828 0%, #8b1a1a 100%);
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.team-banner img {
+  max-width: 300px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.main-content {
+  padding: 12px;
+}
+
+.header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.set-tracker {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.set-badge {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #1e293b;
+  color: #94a3b8;
+}
+
+.set-badge.won {
+  background: #22c55e;
+  color: #fff;
+}
+
+.set-badge.lost {
+  background: #ef4444;
+  color: #fff;
+}
+
+.set-badge.current {
+  background: #3b82f6;
+  color: #fff;
+  animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.match-winner {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 12px 0;
+  animation: pulse 2s infinite;
+}
+
+.score-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.team-score {
+  font-size: 48px;
+  font-weight: bold;
+  min-width: 80px;
+  text-align: center;
+}
+
+.us-score { color: #4ade80; }
+.them-score { color: #f87171; }
+
+.set-info {
+  font-size: 14px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.momentum-bar {
+  height: 8px;
+  background: #1e293b;
+  border-radius: 4px;
+  margin: 12px 0;
+  overflow: hidden;
+}
+
+.momentum-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4ade80, #22c55e);
+  transition: width 0.3s ease;
+}
+
+.run-indicator {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.timeout-alert {
+  background: #dc2626;
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 12px 0;
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes flash-success {
+  0% { background: #22c55e; transform: scale(1); }
+  50% { background: #4ade80; transform: scale(0.95); box-shadow: 0 0 20px rgba(34, 197, 94, 0.6); }
+  100% { background: #22c55e; transform: scale(1); }
+}
+
+@keyframes flash-danger {
+  0% { background: #ef4444; transform: scale(1); }
+  50% { background: #f87171; transform: scale(0.95); box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); }
+  100% { background: #ef4444; transform: scale(1); }
+}
+
+@keyframes flash-error {
+  0% { background: #450a0a; transform: scale(1); }
+  50% { background: #7f1d1d; transform: scale(0.95); box-shadow: 0 0 20px rgba(220, 38, 38, 0.6); }
+  100% { background: #450a0a; transform: scale(1); }
+}
+
+.btn.flash-success {
+  animation: flash-success 0.3s ease-out;
+}
+
+.btn.flash-danger {
+  animation: flash-danger 0.3s ease-out;
+}
+
+.btn.flash-error {
+  animation: flash-error 0.3s ease-out;
+}
+
+select.flash-success {
+  animation: flash-success 0.3s ease-out;
+}
+
+.btn {
+  background: #1e293b;
+  color: #fff;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  touch-action: manipulation;
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+.btn-primary {
+  background: #3b82f6;
+}
+
+.btn-success {
+  background: #22c55e;
+}
+
+.btn-danger {
+  background: #ef4444;
+}
+
+.btn-small {
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.quick-log {
+  background: #1a1a2e;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.log-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.log-btn {
+  padding: 48px 24px;
+  font-size: 24px;
+  font-weight: bold;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.score-display-btn {
+  font-family: 'Orbitron', monospace;
+  font-size: 72px;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  letter-spacing: -2px;
+}
+
+.tag-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tag-btn {
+  padding: 12px 8px;
+  font-size: 13px;
+  background: #3b82f6;
+}
+
+.player-stat-btn {
+  padding: 24px 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.tag-btn.active {
+  background: #2563eb;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+}
+
+.player-select {
+  background: #0f172a;
+  color: #fff;
+  border: 1px solid #334155;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.lineup-panel {
+  background: #1a1a2e;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.rotation-ring {
+  position: relative;
+  width: 320px;
+  height: 240px;
+  margin: 20px auto 10px auto;
+  padding-top: 40px;
+}
+
+.libero-slot {
+  width: 280px;
+  height: 60px;
+  margin: 10px auto;
+  background: #0f172a;
+  border: 2px solid #f59e0b;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  gap: 12px;
+}
+
+.libero-slot:active {
+  transform: scale(0.98);
+}
+
+.libero-slot.filled {
+  background: #78350f;
+  border-color: #f59e0b;
+}
+
+.libero-label {
+  font-weight: bold;
+  color: #f59e0b;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.net-line {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.net-line::after {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 330px;
+  height: 2px;
+  background: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+
+.position-slot {
+  position: absolute;
+  width: 90px;
+  height: 80px;
+  background: #0f172a;
+  border: 2px solid #334155;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.position-slot:active {
+  transform: scale(0.95);
+}
+
+.position-slot.filled {
+  background: #1e40af;
+  border-color: #3b82f6;
+}
+
+.pos-label {
+  font-weight: bold;
+  color: #94a3b8;
+  font-size: 10px;
+  margin-bottom: 2px;
+}
+
+.player-info {
+  text-align: center;
+  color: #fff;
+}
+
+.player-info > div:first-child {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.player-info > div:last-child {
+  font-size: 10px;
+}
+
+.pos-1 { bottom: 20px; right: 15px; }
+.pos-2 { top: 40px; right: 15px; }
+.pos-3 { top: 40px; left: 50%; transform: translateX(-50%); }
+.pos-4 { top: 40px; left: 15px; }
+.pos-5 { bottom: 20px; left: 15px; }
+.pos-6 { bottom: 20px; left: 50%; transform: translateX(-50%); }
+
+.rotation-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+
+.tab {
+  padding: 12px 20px;
+  background: #1a1a2e;
+  border: none;
+  color: #94a3b8;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tab.active {
+  background: #3b82f6;
+  color: #fff;
+}
+
+.tab-content {
+  display: none;
+  background: #1a1a2e;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 13px;
+}
+
+th {
+  background: #0f172a;
+  padding: 10px 8px;
+  text-align: left;
+  font-weight: 600;
+  color: #94a3b8;
+  border-bottom: 2px solid #334155;
+}
+
+td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #1e293b;
+}
+
+tr:hover {
+  background: #0f172a;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.stat-card {
+  background: #0f172a;
+  padding: 14px;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 1000;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: #1a1a2e;
+  padding: 24px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 28px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.roster-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.roster-item {
+  background: #0f172a;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.player-name {
+  font-weight: 600;
+}
+
+.player-number {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.chart-container {
+  background: #0f172a;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 16px 0;
+  height: 300px;
+  position: relative;
+}
+
+.chart-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.recommendation-box {
+  background: #0f172a;
+  border-left: 4px solid #f59e0b;
+  padding: 14px;
+  border-radius: 8px;
+  margin: 12px 0;
+}
+
+.rec-title {
+  font-weight: bold;
+  color: #f59e0b;
+  margin-bottom: 8px;
+}
+
+.rec-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.rec-list li {
+  padding: 6px 0;
+  padding-left: 20px;
+  position: relative;
+}
+
+.rec-list li:before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #f59e0b;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.rally-history {
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 12px 0;
+}
+
+.rally-item {
+  background: #0f172a;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rally-details {
+  flex: 1;
+}
+
+.rally-actions {
+  display: flex;
+  gap: 6px;
+}
+
+@media (max-width: 640px) {
+  .team-score {
+    font-size: 36px;
+  }
+  
+  .rotation-ring {
+    width: 280px;
+    height: 180px;
+  }
+  
+  .position-slot {
+    width: 75px;
+    height: 70px;
+    font-size: 11px;
+  }
+  
+  .player-info > div:first-child {
+    font-size: 14px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="team-banner">
+  <img src="https://i.imgur.com/placeholder.png" alt="Chargers Volleyball" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+  <div style="display: none; color: #fff; font-size: 48px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+    CHARGERS VOLLEYBALL<br>
+    <span style="font-size: 24px;">MATCH TRACKER</span>
+  </div>
+</div>
+
+<div class="main-content">
+
+<div class="header">
+  <div class="set-tracker" id="setTracker"></div>
+  <div id="matchWinner" class="match-winner hidden"></div>
+  <div class="score-display">
+    <div class="us-score" id="usScore">0</div>
+    <div class="set-info" id="setInfo">Set 1</div>
+    <div class="them-score" id="themScore">0</div>
+  </div>
+  <div class="momentum-bar">
+    <div class="momentum-fill" id="momentumFill" style="width: 50%"></div>
+  </div>
+  <div class="run-indicator">
+    <span id="runInfo">No run</span>
+  </div>
+  <div id="timeoutAlert" class="timeout-alert hidden"></div>
+</div>
+
+<div class="quick-log">
+  <div style="margin-bottom: 12px;">
+    <button class="btn btn-primary" id="newMatchMainBtn" style="width: 100%; padding: 12px; font-size: 15px;">
+      New Match
+    </button>
+  </div>
+  
+  <div style="background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid #3b82f6;">
+    <div style="font-size: 13px; font-weight: 600; color: #3b82f6; margin-bottom: 6px;">
+      Log Player Stats
+    </div>
+    <div style="font-size: 11px; color: #94a3b8; line-height: 1.5;">
+      Record player actions anytime during the match. Stats are tracked separately from scoring. After selecting an action type and player, click "Log Event" to save.
+    </div>
+  </div>
+  
+  <div class="tag-grid">
+    <button class="btn tag-btn player-stat-btn" data-tag="serve">Serve</button>
+    <button class="btn tag-btn player-stat-btn" data-tag="attack">Attack</button>
+    <button class="btn tag-btn player-stat-btn" data-tag="dig">Dig</button>
+    <button class="btn tag-btn player-stat-btn" data-tag="block">Block</button>
+  </div>
+  
+  <div id="tagDetails" class="hidden">
+    <select class="player-select" id="tagPlayer">
+      <option value="">Select Player</option>
+    </select>
+    <select class="player-select" id="tagResult" style="margin-top: 8px;">
+      <option value="">Result</option>
+    </select>
+  </div>
+  
+  <div style="margin: 12px 0; padding: 8px; background: #7f1d1d; border-radius: 6px; border: 2px solid #dc2626;">
+    <div style="text-align: center; font-size: 11px; color: #fca5a5; margin-bottom: 6px; font-weight: 600;">
+      Team Errors (No Player Assignment)
+    </div>
+    <div class="tag-grid">
+      <button class="btn tag-btn" data-tag="receive-error" style="border: 2px solid #dc2626; background: #450a0a;">Receive Error</button>
+      <button class="btn tag-btn" data-tag="dt-error" style="border: 2px solid #dc2626; background: #450a0a;">Double Touch or Carry</button>
+      <button class="btn tag-btn" data-tag="net-touch" style="border: 2px solid #dc2626; background: #450a0a;">Net Touch</button>
+      <button class="btn tag-btn" data-tag="net-error" style="border: 2px solid #dc2626; background: #450a0a;">Over/Under Net</button>
+    </div>
+  </div>
+  
+  <div class="log-buttons">
+    <button class="btn btn-success log-btn" id="usScoreBtn" style="padding: 48px 24px;">
+      <span class="score-display-btn" id="usScoreBtnDisplay">0</span>
+      <span>Us Scored</span>
+    </button>
+    <button class="btn btn-danger log-btn" id="themScoreBtn" style="padding: 48px 24px;">
+      <span class="score-display-btn" id="themScoreBtnDisplay">0</span>
+      <span>Them Scored</span>
+    </button>
+  </div>
+  
+  <div style="display: flex; gap: 8px; margin-top: 12px;">
+    <button class="btn btn-small" id="undoBtn">Undo (Z)</button>
+    <button class="btn btn-small" id="historyBtn">History</button>
+  </div>
+</div>
+
+<div class="lineup-panel">
+  <h3 style="margin-bottom: 12px;">On-Court Lineup</h3>
+  <div style="position: relative;">
+    <div class="net-line">NET</div>
+    <div class="rotation-ring" id="rotationRing"></div>
+    <div class="libero-slot" id="liberoSlot">
+      <div class="libero-label">Libero</div>
+      <div class="player-info" id="liberoInfo">
+        <div style="color: #64748b; font-size: 12px;">Not Set</div>
+      </div>
+    </div>
+  </div>
+  <div class="rotation-controls">
+    <button class="btn btn-primary" id="rotateBtn">Rotate</button>
+    <button class="btn" id="rosterBtn">Manage Roster</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="team">Team</button>
+  <button class="tab" data-tab="rotations">Rotations</button>
+  <button class="tab" data-tab="players">Players</button>
+  <button class="tab" data-tab="recommendations">Recommendations</button>
+  <button class="tab" data-tab="awards">Awards</button>
+  <button class="tab" data-tab="settings">Settings</button>
+</div>
+
+<div id="teamTab" class="tab-content active">
+  <h3 style="margin-bottom: 12px;">Team Statistics</h3>
+  <div class="stat-grid" id="teamStats"></div>
+  
+  <h3 style="margin: 20px 0 12px;">Momentum Charts</h3>
+  <div id="momentumChartsContainer"></div>
+  
+  <div style="background: #0f172a; padding: 16px; border-radius: 8px; margin-top: 20px; border-left: 3px solid #3b82f6;">
+    <h4 style="margin-bottom: 12px; color: #3b82f6; font-size: 14px;">Stat Definitions</h4>
+    <div style="font-size: 12px; color: #94a3b8; line-height: 1.8;">
+      <p style="margin-bottom: 6px;"><strong>Kills:</strong> Successful attacks that result in an immediate point.</p>
+      <p style="margin-bottom: 6px;"><strong>Attack Eff:</strong> ((Kills - Errors) / Total Attempts) × 100; shown as a percentage measuring attacking effectiveness.</p>
+      <p style="margin-bottom: 6px;"><strong>Aces:</strong> Serves that land untouched for an immediate point.</p>
+      <p style="margin-bottom: 6px;"><strong>Serve Eff:</strong> ((Aces - Errors) / Total Attempts) × 100; shown as a percentage measuring serving effectiveness.</p>
+      <p style="margin-bottom: 6px;"><strong>Digs:</strong> Successful defensive plays that keep the ball in play.</p>
+      <p style="margin-bottom: 6px;"><strong>Blocks:</strong> Defensive plays at the net that stop opponent attacks.</p>
+      <p style="margin-bottom: 6px;"><strong>UE (Unforced Errors):</strong> Total of all team errors (Receive Errors + Double Touch/Carry + Net Touch + Over/Under Net).</p>
+      <p style="margin-bottom: 6px;"><strong>Receive Errors:</strong> Service reception errors that result in a point for the opponent.</p>
+      <p style="margin-bottom: 6px;"><strong>Double Touch/Carry:</strong> Ball handling violations including double contacts or lifts/carries.</p>
+      <p style="margin-bottom: 6px;"><strong>Net Touch:</strong> Touching the net during play.</p>
+      <p style="margin-bottom: 6px;"><strong>Over/Under Net:</strong> Crossing over or under the net during play.</p>
+    </div>
+  </div>
+</div>
+
+<div id="rotationsTab" class="tab-content">
+  <h3 style="margin-bottom: 12px;">Rotation Analysis</h3>
+  
+  <div style="overflow-x: auto;" id="rotationTable"></div>
+  
+  <div style="background: #0f172a; padding: 16px; border-radius: 8px; margin-top: 20px; border-left: 3px solid #3b82f6;">
+    <h4 style="margin-bottom: 12px; color: #3b82f6; font-size: 14px;">Stat Definitions</h4>
+    <div style="font-size: 12px; color: #94a3b8; line-height: 1.8;">
+      <p style="margin-bottom: 6px;"><strong>Rotation:</strong> The position configuration (R1-R6) based on where the setter is located.</p>
+      <p style="margin-bottom: 6px;"><strong>+/- (Plus/Minus):</strong> Point differential when in this rotation (positive is better).</p>
+      <p style="margin-bottom: 6px;"><strong>Rallies:</strong> Total number of rallies played in this rotation.</p>
+      <p style="margin-bottom: 6px;"><strong>Sideout%:</strong> Percentage of times your team won the point after receiving serve.</p>
+      <p style="margin-bottom: 6px;"><strong>UE Rate:</strong> Percentage of rallies in this rotation that resulted in an unforced error.</p>
+      <p style="margin-bottom: 6px;"><strong>Atk Eff (Attack Efficiency):</strong> ((Kills - Errors) / Total Attempts) × 100; shown as a percentage for this rotation.</p>
+      <p style="margin-bottom: 6px;"><strong>Rcv Err (Receive Errors):</strong> Number of service reception errors in this rotation.</p>
+      <p style="margin-bottom: 6px;"><strong>DT/Carry (Double Touch/Carry):</strong> Number of ball handling violations in this rotation.</p>
+      <p style="margin-bottom: 6px;"><strong>Net Touch:</strong> Number of times the net was touched during play in this rotation.</p>
+      <p style="margin-bottom: 6px;"><strong>Over/Under Net:</strong> Number of times a player crossed over or under the net in this rotation.</p>
+    </div>
+  </div>
+</div>
+
+<div id="playersTab" class="tab-content">
+  <h3 style="margin-bottom: 12px;">Player Statistics</h3>
+  <div style="overflow-x: auto;">
+    <table id="playerTable">
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Serves</th>
+          <th>Srv Eff</th>
+          <th>Attacks</th>
+          <th>Atk Eff</th>
+          <th>Digs</th>
+          <th>Blocks</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  
+  <div style="background: #0f172a; padding: 16px; border-radius: 8px; margin-top: 20px; border-left: 3px solid #3b82f6;">
+    <h4 style="margin-bottom: 12px; color: #3b82f6; font-size: 14px;">Stat Definitions</h4>
+    <div style="font-size: 12px; color: #94a3b8; line-height: 1.8;">
+      <p style="margin-bottom: 6px;"><strong>Serves (Ace-Att-Err):</strong> Aces, total serve attempts, and service errors for this player. Note: Aces and errors automatically count as attempts.</p>
+      <p style="margin-bottom: 6px;"><strong>Srv Eff (Serve Efficiency):</strong> ((Aces - Errors) / Total Attempts) × 100; shown as a percentage measuring serving effectiveness.</p>
+      <p style="margin-bottom: 6px;"><strong>Attacks (K-A-E):</strong> Kills, total attempts, and errors for attacks. Note: Kills and errors automatically count as attempts.</p>
+      <p style="margin-bottom: 6px;"><strong>Atk Eff (Attack Efficiency):</strong> ((Kills - Errors) / Total Attempts) × 100; shown as a percentage measuring attacking effectiveness.</p>
+      <p style="margin-bottom: 6px;"><strong>Digs:</strong> Successful defensive plays that kept the ball alive.</p>
+      <p style="margin-bottom: 6px;"><strong>Blocks:</strong> Successful blocks at the net against opponent attacks.</p>
+      <p style="margin-bottom: 6px;"><strong>Unassigned:</strong> Events recorded without a specific player assignment (still count toward team totals).</p>
+      <p style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #334155; font-style: italic;"><strong>Note:</strong> Player stats are logged independently using the event log system and are tracked separately from scoring.</p>
+    </div>
+  </div>
+</div>
+
+<div id="recommendationsTab" class="tab-content">
+  <h3 style="margin-bottom: 12px;">Rotation Rank Analysis</h3>
+  <div id="futureRecs"></div>
+</div>
+
+<div id="awardsTab" class="tab-content">
+  <h3 style="margin-bottom: 16px;">Match Awards</h3>
+  
+  <div style="margin-bottom: 24px;">
+    <h4 style="margin-bottom: 12px; color: #3b82f6; font-size: 16px;">Match Rotation Awards</h4>
+    <div id="rotationAwards"></div>
+  </div>
+  
+  <div style="margin-bottom: 24px;">
+    <h4 style="margin-bottom: 12px; color: #22c55e; font-size: 16px;">Match Player Awards</h4>
+    <div id="playerAwards"></div>
+  </div>
+</div>
+
+<div id="settingsTab" class="tab-content">
+  <h3 style="margin-bottom: 12px;">Match Settings</h3>
+  <button class="btn btn-primary" id="matchSettingsBtn" style="width: 100%; margin-bottom: 12px;">Edit Match Info</button>
+  <button class="btn" id="newMatchBtn" style="width: 100%; margin-bottom: 12px;">New Match (Keep Roster)</button>
+  <button class="btn" id="sampleDataBtn" style="width: 100%; margin-bottom: 12px;">Load Sample Data</button>
+  <button class="btn btn-danger" id="clearAllDataBtn" style="width: 100%; margin-bottom: 12px;">Clear All Data</button>
+  
+  <h3 style="margin: 20px 0 12px;">Export</h3>
+  <button class="btn btn-success" id="exportCSVBtn" style="width: 100%; margin-bottom: 12px;">Export CSV</button>
+  
+  <h3 style="margin: 20px 0 12px;">Timeout Thresholds</h3>
+  <div class="form-group">
+    <label class="form-label">Opponent Run Threshold</label>
+    <input type="number" class="form-input" id="runThreshold" value="7">
+  </div>
+  <div class="form-group">
+    <label class="form-label">UE Count (Last 6)</label>
+    <input type="number" class="form-input" id="ueThreshold" value="5">
+  </div>
+</div>
+
+<div id="rosterModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Roster Manager</h2>
+      <button class="close-btn" id="closeRosterModal">&times;</button>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Player Number</label>
+      <input type="text" class="form-input" id="playerNumber" placeholder="e.g., 12">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Player Name</label>
+      <input type="text" class="form-input" id="playerName" placeholder="e.g., Sarah Johnson">
+    </div>
+    <button class="btn btn-success" id="addPlayerBtn" style="width: 100%; margin-bottom: 16px;">Add Player</button>
+    
+    <h3 style="margin: 20px 0 12px;">Current Roster</h3>
+    <div class="roster-list" id="rosterList"></div>
+  </div>
+</div>
+
+<div id="matchModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Match Settings</h2>
+      <button class="close-btn" id="closeMatchModal">&times;</button>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Team Name</label>
+      <input type="text" class="form-input" id="teamName" placeholder="Our Team">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Opponent</label>
+      <input type="text" class="form-input" id="opponentName" placeholder="Opponent Team">
+    </div>
+    <button class="btn btn-primary" id="saveMatchBtn" style="width: 100%;">Save</button>
+  </div>
+</div>
+
+<div id="historyModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Rally History</h2>
+      <button class="close-btn" id="closeHistoryModal">&times;</button>
+    </div>
+    <div class="rally-history" id="rallyHistoryList"></div>
+  </div>
+</div>
+
+<div id="subModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Substitute Player</h2>
+      <button class="close-btn" id="closeSubModal">&times;</button>
+    </div>
+    <p style="margin-bottom: 16px; color: #94a3b8;" id="subInfo"></p>
+    <div id="benchPlayers"></div>
+  </div>
+</div>
+
+<div id="deleteModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Confirm Delete</h2>
+      <button class="close-btn" id="closeDeleteModal">&times;</button>
+    </div>
+    <p id="deleteMessage" style="margin: 20px 0; color: #94a3b8;"></p>
+    <div style="display: flex; gap: 12px;">
+      <button class="btn btn-danger" id="confirmDeleteBtn" style="flex: 1;">Delete</button>
+      <button class="btn" id="cancelDeleteBtn" style="flex: 1;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="deleteRallyModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Confirm Delete Rally</h2>
+      <button class="close-btn" id="closeDeleteRallyModal">&times;</button>
+    </div>
+    <p id="deleteRallyMessage" style="margin: 20px 0; color: #94a3b8;"></p>
+    <div style="display: flex; gap: 12px;">
+      <button class="btn btn-danger" id="confirmDeleteRallyBtn" style="flex: 1;">Delete Rally</button>
+      <button class="btn" id="cancelDeleteRallyBtn" style="flex: 1;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="newMatchModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Start New Match</h2>
+      <button class="close-btn" id="closeNewMatchModal">&times;</button>
+    </div>
+    <p id="newMatchMessage" style="margin: 20px 0; color: #94a3b8;"></p>
+    <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin: 12px 0;">
+      <div style="font-weight: 600; margin-bottom: 8px; color: #4ade80;">Will be preserved:</div>
+      <ul style="margin: 0; padding-left: 20px; color: #94a3b8; font-size: 13px;">
+        <li>All players in roster</li>
+        <li>Team name</li>
+        <li>Settings & thresholds</li>
+      </ul>
+      <div style="font-weight: 600; margin: 12px 0 8px; color: #f87171;">Will be cleared:</div>
+      <ul style="margin: 0; padding-left: 20px; color: #94a3b8; font-size: 13px;">
+        <li>All scores and rallies</li>
+        <li>Set tracking</li>
+        <li>Court lineup</li>
+        <li>Current tags</li>
+      </ul>
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <button class="btn btn-primary" id="confirmNewMatchBtn" style="flex: 1;">Start New Match</button>
+      <button class="btn" id="cancelNewMatchBtn" style="flex: 1;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'vb-dashboard-data';
+const DEFAULT_THRESHOLDS = { run: 7, ue: 5 };
+
+let appState = {
+  meta: {
+    teamName: 'Our Team',
+    opponent: '',
+    matchId: Date.now().toString(36) + Math.random().toString(36).substr(2),
+    createdAt: new Date().toISOString()
+  },
+  roster: [],
+  lineup: {
+    rotationIndex: 0,
+    onCourt: [null, null, null, null, null, null]
+  },
+  rallies: [],
+  events: [],
+  sets: [],
+  matchWinner: null,
+  thresholds: { ...DEFAULT_THRESHOLDS },
+  lastSelectedPlayer: null,
+  currentTags: {}
+};
+
+let subPosition = null;
+let playerToDelete = null;
+let rallyToDelete = null;
+
+function init() {
+  loadState();
+  setupEventListeners();
+  renderAll();
+}
+
+function setupEventListeners() {
+  document.getElementById('usScoreBtn').addEventListener('click', () => scorePoint('us'));
+  document.getElementById('themScoreBtn').addEventListener('click', () => scorePoint('them'));
+  document.getElementById('newMatchMainBtn').addEventListener('click', newMatch);
+  document.getElementById('undoBtn').addEventListener('click', undoLastRally);
+  document.getElementById('historyBtn').addEventListener('click', openRallyHistory);
+  document.getElementById('rotateBtn').addEventListener('click', rotateLineup);
+  document.getElementById('rosterBtn').addEventListener('click', openRosterManager);
+  document.getElementById('liberoSlot').addEventListener('click', () => openSubstitution('libero'));
+  document.getElementById('addPlayerBtn').addEventListener('click', addPlayer);
+  document.getElementById('matchSettingsBtn').addEventListener('click', openMatchSettings);
+  document.getElementById('newMatchBtn').addEventListener('click', newMatch);
+  document.getElementById('sampleDataBtn').addEventListener('click', loadSampleData);
+  document.getElementById('clearAllDataBtn').addEventListener('click', clearAllData);
+  document.getElementById('exportCSVBtn').addEventListener('click', exportCSV);
+  document.getElementById('saveMatchBtn').addEventListener('click', saveMatchSettings);
+  document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
+  document.getElementById('confirmDeleteRallyBtn').addEventListener('click', confirmDeleteRally);
+  document.getElementById('confirmNewMatchBtn').addEventListener('click', confirmNewMatch);
+  
+  document.querySelectorAll('.tag-btn').forEach(btn => {
+    btn.addEventListener('click', () => toggleTag(btn.dataset.tag));
+  });
+  
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+  });
+  
+  document.getElementById('closeRosterModal').addEventListener('click', () => closeModal('rosterModal'));
+  document.getElementById('closeMatchModal').addEventListener('click', () => closeModal('matchModal'));
+  document.getElementById('closeHistoryModal').addEventListener('click', () => closeModal('historyModal'));
+  document.getElementById('closeSubModal').addEventListener('click', () => closeModal('subModal'));
+  document.getElementById('closeDeleteModal').addEventListener('click', () => closeModal('deleteModal'));
+  document.getElementById('cancelDeleteBtn').addEventListener('click', () => closeModal('deleteModal'));
+  document.getElementById('closeDeleteRallyModal').addEventListener('click', () => closeModal('deleteRallyModal'));
+  document.getElementById('cancelDeleteRallyBtn').addEventListener('click', () => closeModal('deleteRallyModal'));
+  document.getElementById('closeNewMatchModal').addEventListener('click', () => closeModal('newMatchModal'));
+  document.getElementById('cancelNewMatchBtn').addEventListener('click', () => closeModal('newMatchModal'));
+  
+  document.getElementById('runThreshold').addEventListener('change', (e) => updateThreshold('run', e.target.value));
+  document.getElementById('ueThreshold').addEventListener('change', (e) => updateThreshold('ue', e.target.value));
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key.toLowerCase() === 'u') scorePoint('us');
+    else if (e.key.toLowerCase() === 't') scorePoint('them');
+    else if (e.key.toLowerCase() === 'z') undoLastRally();
+  });
+  
+  window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+      e.target.classList.remove('active');
+    }
+  });
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      appState = { ...appState, ...JSON.parse(saved) };
+      if (!appState.thresholds) appState.thresholds = { ...DEFAULT_THRESHOLDS };
+      if (!appState.events) appState.events = [];
+    }
+  } catch (e) {
+    console.error('Failed to load state:', e);
+  }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+  } catch (e) {
+    console.error('Failed to save state:', e);
+  }
+}
+
+function logEvent() {
+  const activeTagBtn = document.querySelector('.tag-btn.active');
+  if (!activeTagBtn) {
+    return;
+  }
+  
+  const tagType = activeTagBtn.dataset.tag;
+  const playerId = document.getElementById('tagPlayer').value;
+  const result = document.getElementById('tagResult').value;
+  
+  // Team errors don't require a player
+  const isTeamError = ['receive-error', 'dt-error', 'net-touch', 'net-error'].includes(tagType);
+  
+  if (!playerId && !isTeamError) {
+    return;
+  }
+  
+  const currentSet = getCurrentSet();
+  
+  const event = {
+    id: Date.now().toString(36) + Math.random().toString(36).substr(2),
+    set: currentSet,
+    type: tagType,
+    playerId: isTeamError ? 'team-error' : playerId,
+    result: result || undefined,
+    rotationAtEvent: {
+      rotationIndex: appState.lineup.rotationIndex,
+      onCourt: [...appState.lineup.onCourt],
+      libero: appState.lineup.libero
+    },
+    timestamp: new Date().toISOString()
+  };
+  
+  appState.events.push(event);
+  clearTagSelection();
+  saveState();
+  renderAll();
+}
+
+function scorePoint(team) {
+  if (appState.matchWinner) {
+    return;
+  }
+  
+  // Add visual feedback
+  const button = team === 'us' ? document.getElementById('usScoreBtn') : document.getElementById('themScoreBtn');
+  const flashClass = team === 'us' ? 'flash-success' : 'flash-danger';
+  button.classList.add(flashClass);
+  setTimeout(() => button.classList.remove(flashClass), 300);
+  
+  // Add haptic feedback on mobile
+  if (navigator.vibrate) {
+    navigator.vibrate(50);
+  }
+  
+  const currentSet = getCurrentSet();
+  const previousRally = appState.rallies[appState.rallies.length - 1];
+  
+  const rally = {
+    id: Date.now().toString(36) + Math.random().toString(36).substr(2),
+    set: currentSet,
+    pointTo: team,
+    tags: { ...appState.currentTags },
+    rotationAtRally: {
+      rotationIndex: appState.lineup.rotationIndex,
+      onCourt: [...appState.lineup.onCourt],
+      libero: appState.lineup.libero
+    },
+    timestamp: new Date().toISOString()
+  };
+  
+  const scores = calculateCurrentScore();
+  rally.scoreAfter = {
+    us: team === 'us' ? scores.us + 1 : scores.us,
+    them: team === 'them' ? scores.them + 1 : scores.them
+  };
+  
+  appState.rallies.push(rally);
+  appState.currentTags = {};
+  clearTagSelection();
+  
+  if (team === 'us' && previousRally && previousRally.pointTo === 'them') {
+    rotateLineup();
+  }
+  
+  checkSetComplete(rally.scoreAfter, currentSet);
+  saveState();
+  renderAll();
+}
+
+function checkSetComplete(scores, setNumber) {
+  const target = setNumber === 3 ? 15 : 25;
+  const diff = Math.abs(scores.us - scores.them);
+  
+  if ((scores.us >= target || scores.them >= target) && diff >= 2) {
+    const winner = scores.us > scores.them ? 'us' : 'them';
+    
+    appState.sets.push({
+      set: setNumber,
+      winner: winner,
+      scoreUs: scores.us,
+      scoreThem: scores.them
+    });
+    
+    const usSetWins = appState.sets.filter(s => s.winner === 'us').length;
+    const themSetWins = appState.sets.filter(s => s.winner === 'them').length;
+    
+    if (usSetWins === 2) {
+      appState.matchWinner = 'us';
+    } else if (themSetWins === 2) {
+      appState.matchWinner = 'them';
+    } else {
+      appState.lineup.rotationIndex = 0;
+      appState.lineup.onCourt = [null, null, null, null, null, null];
+      appState.lineup.libero = null;
+      saveState();
+      setTimeout(() => renderRotationRing(), 100);
+    }
+  }
+}
+
+function toggleTag(tagType) {
+  const tagBtns = document.querySelectorAll('.tag-btn');
+  const btn = Array.from(tagBtns).find(b => b.dataset.tag === tagType);
+  
+  if (btn.classList.contains('active')) {
+    btn.classList.remove('active');
+    delete appState.currentTags[tagType];
+    document.getElementById('tagDetails').classList.add('hidden');
+    return;
+  }
+  
+  tagBtns.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  // Team errors don't need player/result selection
+  const isTeamError = ['receive-error', 'dt-error', 'net-touch', 'net-error'].includes(tagType);
+  
+  if (isTeamError) {
+    // Add visual feedback for team error buttons
+    btn.classList.add('flash-error');
+    setTimeout(() => btn.classList.remove('flash-error'), 300);
+    
+    // Add haptic feedback on mobile
+    if (navigator.vibrate) {
+      navigator.vibrate(50);
+    }
+    
+    document.getElementById('tagDetails').classList.add('hidden');
+    // Auto-log team errors immediately
+    logEvent();
+    return;
+  }
+  
+  const tagDetails = document.getElementById('tagDetails');
+  const playerSelect = document.getElementById('tagPlayer');
+  const resultSelect = document.getElementById('tagResult');
+  
+  tagDetails.classList.remove('hidden');
+  
+  playerSelect.innerHTML = '<option value="">Select Player (Optional)</option>';
+  appState.roster.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = `#${p.number} ${p.name}`;
+    if (appState.lastSelectedPlayer === p.id) opt.selected = true;
+    playerSelect.appendChild(opt);
+  });
+  
+  resultSelect.innerHTML = '<option value="">Result</option>';
+  resultSelect.classList.add('hidden');
+  
+  if (tagType === 'serve') {
+    resultSelect.classList.remove('hidden');
+    ['ace', 'error', 'in'].forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r;
+      opt.textContent = r.charAt(0).toUpperCase() + r.slice(1);
+      resultSelect.appendChild(opt);
+    });
+  } else if (tagType === 'attack') {
+    resultSelect.classList.remove('hidden');
+    ['kill', 'error', 'attempt'].forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r;
+      opt.textContent = r.charAt(0).toUpperCase() + r.slice(1);
+      resultSelect.appendChild(opt);
+    });
+  } else if (tagType === 'dig') {
+    resultSelect.classList.remove('hidden');
+    ['success', 'no-success'].forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r;
+      opt.textContent = r === 'no-success' ? 'No Success' : r.charAt(0).toUpperCase() + r.slice(1);
+      resultSelect.appendChild(opt);
+    });
+  } else if (tagType === 'block') {
+    resultSelect.classList.remove('hidden');
+    ['stuff', 'hands-on'].forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r;
+      opt.textContent = r === 'hands-on' ? 'Hands on/In Play' : r.charAt(0).toUpperCase() + r.slice(1);
+      resultSelect.appendChild(opt);
+    });
+  }
+  
+  const updateTag = () => {
+    const playerId = playerSelect.value;
+    const result = resultSelect.value;
+    if (playerId) appState.lastSelectedPlayer = playerId;
+    appState.currentTags[tagType] = {
+      team: 'us',
+      playerId: playerId || undefined,
+      result: result || undefined
+    };
+    
+    // Auto-log when both player and result are selected for serve, attack, dig, or block
+    if (['serve', 'attack', 'dig', 'block'].includes(tagType) && playerId && result) {
+      // Add green flash to result select
+      resultSelect.classList.add('flash-success');
+      setTimeout(() => resultSelect.classList.remove('flash-success'), 300);
+      
+      // Add haptic feedback on mobile
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+      
+      // Auto-log the event
+      setTimeout(() => logEvent(), 100);
+    }
+  };
+  
+  playerSelect.onchange = updateTag;
+  resultSelect.onchange = updateTag;
+  if (appState.lastSelectedPlayer) updateTag();
+}
+
+function clearTagSelection() {
+  document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tagDetails').classList.add('hidden');
+}
+
+function undoLastRally() {
+  if (appState.rallies.length === 0) {
+    return;
+  }
+  appState.rallies.pop();
+  saveState();
+  renderAll();
+}
+
+function getCurrentSet() {
+  return appState.sets.length + 1;
+}
+
+function calculateCurrentScore() {
+  const currentSet = getCurrentSet();
+  let us = 0, them = 0;
+  
+  appState.rallies.forEach(r => {
+    if (r.set === currentSet) {
+      if (r.pointTo === 'us') us++;
+      else them++;
+    }
+  });
+  
+  return { us, them };
+}
+
+function rotateLineup() {
+  appState.lineup.rotationIndex = (appState.lineup.rotationIndex + 1) % 6;
+  const temp = appState.lineup.onCourt[0];
+  appState.lineup.onCourt[0] = appState.lineup.onCourt[1];
+  appState.lineup.onCourt[1] = appState.lineup.onCourt[2];
+  appState.lineup.onCourt[2] = appState.lineup.onCourt[3];
+  appState.lineup.onCourt[3] = appState.lineup.onCourt[4];
+  appState.lineup.onCourt[4] = appState.lineup.onCourt[5];
+  appState.lineup.onCourt[5] = temp;
+  saveState();
+  renderRotationRing();
+}
+
+function openSubstitution(position) {
+  subPosition = position;
+  
+  if (position === 'libero') {
+    const currentLibero = appState.lineup.libero;
+    const currentPlayer = appState.roster.find(p => p.id === currentLibero);
+    
+    document.getElementById('subInfo').textContent = currentPlayer ? 
+      `Substituting out Libero: #${currentPlayer.number} ${currentPlayer.name}` :
+      `Select player for Libero position`;
+    
+    const onCourtIds = appState.lineup.onCourt.filter(id => id !== null);
+    const available = appState.roster.filter(p => 
+      !onCourtIds.includes(p.id) && p.id !== currentLibero
+    );
+    
+    if (currentLibero) {
+      available.unshift(appState.roster.find(p => p.id === currentLibero));
+    }
+    
+    const benchDiv = document.getElementById('benchPlayers');
+    benchDiv.innerHTML = '';
+    
+    if (currentLibero) {
+      const clearBtn = document.createElement('button');
+      clearBtn.className = 'btn btn-danger';
+      clearBtn.style.width = '100%';
+      clearBtn.style.marginBottom = '8px';
+      clearBtn.textContent = 'Clear Libero';
+      clearBtn.addEventListener('click', () => {
+        appState.lineup.libero = null;
+        saveState();
+        closeModal('subModal');
+        renderRotationRing();
+      });
+      benchDiv.appendChild(clearBtn);
+    }
+    
+    available.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'btn';
+      btn.style.width = '100%';
+      btn.style.marginBottom = '8px';
+      btn.textContent = `#${p.number} ${p.name}`;
+      btn.addEventListener('click', () => {
+        appState.lineup.libero = p.id;
+        saveState();
+        closeModal('subModal');
+        renderRotationRing();
+      });
+      benchDiv.appendChild(btn);
+    });
+  } else {
+    const currentPlayerId = appState.lineup.onCourt[position];
+    const currentPlayer = appState.roster.find(p => p.id === currentPlayerId);
+    
+    document.getElementById('subInfo').textContent = currentPlayer ? 
+      `Substituting out: #${currentPlayer.number} ${currentPlayer.name}` :
+      `Select player for Position ${position + 1}`;
+    
+    const onCourtIds = appState.lineup.onCourt.filter(id => id !== null);
+    const liberoId = appState.lineup.libero;
+    const available = appState.roster.filter(p => 
+      (!onCourtIds.includes(p.id) || p.id === currentPlayerId) && p.id !== liberoId
+    );
+    
+    const benchDiv = document.getElementById('benchPlayers');
+    benchDiv.innerHTML = '';
+    
+    if (currentPlayerId) {
+      const clearBtn = document.createElement('button');
+      clearBtn.className = 'btn btn-danger';
+      clearBtn.style.width = '100%';
+      clearBtn.style.marginBottom = '8px';
+      clearBtn.textContent = 'Clear Position';
+      clearBtn.addEventListener('click', () => {
+        appState.lineup.onCourt[subPosition] = null;
+        saveState();
+        closeModal('subModal');
+        renderRotationRing();
+      });
+      benchDiv.appendChild(clearBtn);
+    }
+    
+    available.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'btn';
+      btn.style.width = '100%';
+      btn.style.marginBottom = '8px';
+      btn.textContent = `#${p.number} ${p.name}`;
+      btn.addEventListener('click', () => {
+        appState.lineup.onCourt[subPosition] = p.id;
+        saveState();
+        closeModal('subModal');
+        renderRotationRing();
+      });
+      benchDiv.appendChild(btn);
+    });
+  }
+  
+  document.getElementById('subModal').classList.add('active');
+}
+
+function renderRotationRing() {
+  const ring = document.getElementById('rotationRing');
+  ring.innerHTML = '';
+  
+  for (let i = 0; i < 6; i++) {
+    const slot = document.createElement('div');
+    slot.className = `position-slot pos-${i + 1}`;
+    
+    const playerId = appState.lineup.onCourt[i];
+    const player = appState.roster.find(p => p.id === playerId);
+    
+    if (player) {
+      slot.classList.add('filled');
+      slot.innerHTML = `
+        <div class="pos-label">P${i + 1}</div>
+        <div class="player-info">
+          <div>#${player.number}</div>
+          <div style="font-size: 9px;">${player.name.split(' ')[0]}</div>
+        </div>
+      `;
+    } else {
+      slot.innerHTML = `
+        <div class="pos-label">P${i + 1}</div>
+        <div style="color: #64748b; font-size: 11px;">Empty</div>
+      `;
+    }
+    
+    slot.addEventListener('click', () => openSubstitution(i));
+    ring.appendChild(slot);
+  }
+  
+  const liberoSlot = document.getElementById('liberoSlot');
+  const liberoInfo = document.getElementById('liberoInfo');
+  const liberoId = appState.lineup.libero;
+  const liberoPlayer = appState.roster.find(p => p.id === liberoId);
+  
+  if (liberoPlayer) {
+    liberoSlot.classList.add('filled');
+    liberoInfo.innerHTML = `
+      <div style="font-size: 16px; font-weight: bold; color: #fff;">#${liberoPlayer.number}</div>
+      <div style="font-size: 12px; color: #fff;">${liberoPlayer.name}</div>
+    `;
+  } else {
+    liberoSlot.classList.remove('filled');
+    liberoInfo.innerHTML = '<div style="color: #64748b; font-size: 12px;">Not Set</div>';
+  }
+}
+
+function openRosterManager() {
+  renderRosterList();
+  document.getElementById('rosterModal').classList.add('active');
+}
+
+function addPlayer() {
+  const number = document.getElementById('playerNumber').value.trim();
+  const name = document.getElementById('playerName').value.trim();
+  
+  if (!number || !name) {
+    return;
+  }
+  
+  appState.roster.push({
+    id: Date.now().toString(36) + Math.random().toString(36).substr(2),
+    number,
+    name
+  });
+  
+  saveState();
+  document.getElementById('playerNumber').value = '';
+  document.getElementById('playerName').value = '';
+  renderRosterList();
+  renderAll();
+}
+
+function deletePlayer(playerId) {
+  const player = appState.roster.find(p => p.id === playerId);
+  if (!player) return;
+  
+  playerToDelete = playerId;
+  document.getElementById('deleteMessage').textContent = 
+    `Delete ${player.name} (#${player.number})? This will remove them from all stats.`;
+  document.getElementById('deleteModal').classList.add('active');
+}
+
+function confirmDelete() {
+  if (!playerToDelete) return;
+  
+  const playerId = playerToDelete;
+  appState.roster = appState.roster.filter(p => p.id !== playerId);
+  appState.lineup.onCourt = appState.lineup.onCourt.map(id => id === playerId ? null : id);
+  
+  appState.rallies.forEach(rally => {
+    Object.keys(rally.tags).forEach(tagType => {
+      const tag = rally.tags[tagType];
+      if (tag && tag.playerId === playerId) delete tag.playerId;
+    });
+    if (rally.rotationAtRally && rally.rotationAtRally.onCourt) {
+      rally.rotationAtRally.onCourt = rally.rotationAtRally.onCourt.map(id => id === playerId ? null : id);
+    }
+  });
+  
+  if (appState.lastSelectedPlayer === playerId) appState.lastSelectedPlayer = null;
+  
+  saveState();
+  renderRosterList();
+  renderAll();
+  closeModal('deleteModal');
+  playerToDelete = null;
+}
+
+function renderRosterList() {
+  const list = document.getElementById('rosterList');
+  list.innerHTML = '';
+  
+  if (appState.roster.length === 0) {
+    list.innerHTML = '<p style="color: #64748b; text-align: center; padding: 20px;">No players added yet</p>';
+    return;
+  }
+  
+  appState.roster.forEach(p => {
+    const item = document.createElement('div');
+    item.className = 'roster-item';
+    
+    const infoDiv = document.createElement('div');
+    infoDiv.innerHTML = `
+      <div class="player-name">${p.name}</div>
+      <div class="player-number">#${p.number}</div>
+    `;
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn btn-danger btn-small';
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.addEventListener('click', () => deletePlayer(p.id));
+    
+    item.appendChild(infoDiv);
+    item.appendChild(deleteBtn);
+    list.appendChild(item);
+  });
+}
+
+function computeAggregates() {
+  const agg = { perSet: {}, perRotation: {}, perPlayer: {}, perSetRotation: {} };
+  
+  appState.roster.forEach(p => {
+    agg.perPlayer[p.id] = {
+      serves: { att: 0, ace: 0, err: 0 },
+      attacks: { k: 0, a: 0, e: 0, eff: 0 },
+      digs: 0, blocks: 0, assists: 0, ue: 0
+    };
+  });
+  
+  agg.perPlayer['unassigned'] = {
+    serves: { att: 0, ace: 0, err: 0 },
+    attacks: { k: 0, a: 0, e: 0, eff: 0 },
+    digs: 0, blocks: 0, assists: 0, ue: 0
+  };
+  
+  agg.teamErrors = {
+    receiveError: 0,
+    dtError: 0,
+    netTouch: 0,
+    netError: 0
+  };
+  
+  for (let i = 0; i < 6; i++) {
+    agg.perRotation[`R${i + 1}`] = {
+      plusMinus: 0, rallies: 0, usPoints: 0, themPoints: 0,
+      sideoutAtt: 0, sideoutSuccess: 0, ueCount: 0,
+      attacks: { k: 0, a: 0, e: 0 },
+      serves: { att: 0, ace: 0, err: 0 },
+      teamErrors: { receiveError: 0, dtError: 0, netTouch: 0, netError: 0 }
+    };
+  }
+  
+  const maxSet = Math.max(...appState.rallies.map(r => r.set), 0);
+  for (let setNum = 1; setNum <= maxSet; setNum++) {
+    agg.perSetRotation[`Set${setNum}`] = {};
+    for (let i = 0; i < 6; i++) {
+      agg.perSetRotation[`Set${setNum}`][`R${i + 1}`] = {
+        plusMinus: 0, rallies: 0, usPoints: 0, themPoints: 0,
+        sideoutAtt: 0, sideoutSuccess: 0, ueCount: 0,
+        attacks: { k: 0, a: 0, e: 0 },
+        serves: { att: 0, ace: 0, err: 0 },
+        teamErrors: { receiveError: 0, dtError: 0, netTouch: 0, netError: 0 }
+      };
+    }
+  }
+  
+  appState.rallies.forEach((rally, idx) => {
+    const rot = `R${rally.rotationAtRally.rotationIndex + 1}`;
+    const rotStats = agg.perRotation[rot];
+    const setKey = `Set${rally.set}`;
+    const setRotStats = agg.perSetRotation[setKey] ? agg.perSetRotation[setKey][rot] : null;
+    
+    rotStats.rallies++;
+    if (rally.pointTo === 'us') {
+      rotStats.usPoints++;
+      rotStats.plusMinus++;
+    } else {
+      rotStats.themPoints++;
+      rotStats.plusMinus--;
+    }
+    
+    if (setRotStats) {
+      setRotStats.rallies++;
+      if (rally.pointTo === 'us') {
+        setRotStats.usPoints++;
+        setRotStats.plusMinus++;
+      } else {
+        setRotStats.themPoints++;
+        setRotStats.plusMinus--;
+      }
+    }
+    
+    if (idx > 0 && appState.rallies[idx - 1].pointTo !== rally.pointTo) {
+      rotStats.sideoutAtt++;
+      if (rally.pointTo === 'us') rotStats.sideoutSuccess++;
+      
+      if (setRotStats) {
+        setRotStats.sideoutAtt++;
+        if (rally.pointTo === 'us') setRotStats.sideoutSuccess++;
+      }
+    }
+  });
+  
+  appState.events.forEach(event => {
+    const pid = event.playerId || 'unassigned';
+    const pStats = agg.perPlayer[pid];
+    const rot = `R${event.rotationAtEvent.rotationIndex + 1}`;
+    const rotStats = agg.perRotation[rot];
+    const setKey = `Set${event.set}`;
+    const setRotStats = agg.perSetRotation[setKey] ? agg.perSetRotation[setKey][rot] : null;
+    
+    // Handle team errors first (they don't need player stats)
+    if (event.type === 'receive-error') {
+      agg.teamErrors.receiveError++;
+      rotStats.teamErrors.receiveError++;
+      rotStats.ueCount++; // Count as UE for rotation
+      if (setRotStats) {
+        setRotStats.teamErrors.receiveError++;
+        setRotStats.ueCount++; // Count as UE for set rotation
+      }
+      return;
+    }
+    if (event.type === 'dt-error') {
+      agg.teamErrors.dtError++;
+      rotStats.teamErrors.dtError++;
+      rotStats.ueCount++; // Count as UE for rotation
+      if (setRotStats) {
+        setRotStats.teamErrors.dtError++;
+        setRotStats.ueCount++; // Count as UE for set rotation
+      }
+      return;
+    }
+    if (event.type === 'net-touch') {
+      agg.teamErrors.netTouch++;
+      rotStats.teamErrors.netTouch++;
+      rotStats.ueCount++; // Count as UE for rotation
+      if (setRotStats) {
+        setRotStats.teamErrors.netTouch++;
+        setRotStats.ueCount++; // Count as UE for set rotation
+      }
+      return;
+    }
+    if (event.type === 'net-error') {
+      agg.teamErrors.netError++;
+      rotStats.teamErrors.netError++;
+      rotStats.ueCount++; // Count as UE for rotation
+      if (setRotStats) {
+        setRotStats.teamErrors.netError++;
+        setRotStats.ueCount++; // Count as UE for set rotation
+      }
+      return;
+    }
+    
+    if (!pStats) return;
+    
+    if (event.type === 'serve') {
+      pStats.serves.att++;
+      rotStats.serves.att++;
+      if (setRotStats) setRotStats.serves.att++;
+      if (event.result === 'ace') {
+        pStats.serves.ace++;
+        rotStats.serves.ace++;
+        if (setRotStats) setRotStats.serves.ace++;
+      } else if (event.result === 'error') {
+        pStats.serves.err++;
+        rotStats.serves.err++;
+        if (setRotStats) setRotStats.serves.err++;
+      }
+      // 'in' result also counts as an attempt (already incremented above)
+    }
+    
+    if (event.type === 'attack') {
+      pStats.attacks.a++;
+      rotStats.attacks.a++;
+      if (setRotStats) setRotStats.attacks.a++;
+      if (event.result === 'kill') {
+        pStats.attacks.k++;
+        rotStats.attacks.k++;
+        if (setRotStats) setRotStats.attacks.k++;
+      } else if (event.result === 'error') {
+        pStats.attacks.e++;
+        rotStats.attacks.e++;
+        if (setRotStats) setRotStats.attacks.e++;
+      }
+      // 'attempt' result also counts as an attempt (already incremented above)
+    }
+    
+    if (event.type === 'dig') {
+      // Only count digs with 'success' result or no result (for backward compatibility)
+      if (!event.result || event.result === 'success') {
+        pStats.digs++;
+      }
+    }
+    if (event.type === 'block') pStats.blocks++;
+    if (event.type === 'assist') pStats.assists++;
+    if (event.type === 'ue') {
+      pStats.ue++;
+      rotStats.ueCount++;
+      if (setRotStats) setRotStats.ueCount++;
+    }
+  });
+  
+  Object.keys(agg.perPlayer).forEach(pid => {
+    const p = agg.perPlayer[pid];
+    if (p.attacks.a > 0) {
+      p.attacks.eff = (((p.attacks.k - p.attacks.e) / p.attacks.a) * 100).toFixed(1);
+    }
+  });
+  
+  Object.keys(agg.perRotation).forEach(rot => {
+    const r = agg.perRotation[rot];
+    r.sideoutPct = r.sideoutAtt > 0 ? (r.sideoutSuccess / r.sideoutAtt * 100).toFixed(1) : 0;
+    r.ueRate = r.rallies > 0 ? (r.ueCount / r.rallies * 100).toFixed(1) : 0;
+    r.attackEff = r.attacks.a > 0 ? (((r.attacks.k - r.attacks.e) / r.attacks.a) * 100).toFixed(1) : 0;
+    r.serveEff = r.serves.att > 0 ? (((r.serves.ace - r.serves.err) / r.serves.att) * 100).toFixed(1) : 0;
+  });
+  
+  Object.keys(agg.perSetRotation).forEach(setKey => {
+    Object.keys(agg.perSetRotation[setKey]).forEach(rot => {
+      const r = agg.perSetRotation[setKey][rot];
+      r.sideoutPct = r.sideoutAtt > 0 ? (r.sideoutSuccess / r.sideoutAtt * 100).toFixed(1) : 0;
+      r.ueRate = r.rallies > 0 ? (r.ueCount / r.rallies * 100).toFixed(1) : 0;
+      r.attackEff = r.attacks.a > 0 ? (((r.attacks.k - r.attacks.e) / r.attacks.a) * 100).toFixed(1) : 0;
+      r.serveEff = r.serves.att > 0 ? (((r.serves.ace - r.serves.err) / r.serves.att) * 100).toFixed(1) : 0;
+    });
+  });
+  
+  return agg;
+}
+
+function getMomentumData() {
+  const data = { run: 0, runTeam: null };
+  if (appState.rallies.length === 0) return data;
+  
+  let run = 0, runTeam = null;
+  for (let i = appState.rallies.length - 1; i >= 0; i--) {
+    const rally = appState.rallies[i];
+    if (runTeam === null) {
+      runTeam = rally.pointTo;
+      run = 1;
+    } else if (rally.pointTo === runTeam) {
+      run++;
+    } else {
+      break;
+    }
+  }
+  data.run = run;
+  data.runTeam = runTeam;
+  
+  return data;
+}
+
+function checkTimeoutRecommendation() {
+  const thresholds = appState.thresholds;
+  const reasons = [];
+  if (appState.rallies.length < 5) return null;
+  
+  const momentum = getMomentumData();
+  if (momentum.runTeam === 'them' && momentum.run >= thresholds.run) {
+    reasons.push(`Opponent on ${momentum.run}-point run`);
+  }
+  
+  const last7 = appState.rallies.slice(-6);
+  let ueCount = 0;
+  
+  // Count player UEs from rally tags
+  last7.forEach(r => {
+    if (r.tags.ue && r.tags.ue.team === 'us') ueCount++;
+  });
+  
+  // Count team errors from events in the last 6 rallies
+  const lastRallyTimestamp = appState.rallies.length > 0 ? appState.rallies[appState.rallies.length - 6]?.timestamp : null;
+  if (lastRallyTimestamp) {
+    appState.events.forEach(e => {
+      if (e.timestamp >= lastRallyTimestamp && 
+          (e.type === 'receive-error' || e.type === 'dt-error' || e.type === 'net-touch' || e.type === 'net-error')) {
+        ueCount++;
+      }
+    });
+  }
+  
+  if (ueCount >= thresholds.ue) {
+    reasons.push(`${ueCount} unforced errors in last 6 rallies`);
+  }
+  
+  // Check for 5 consecutive receive errors
+  const recentEvents = appState.events.slice(-5);
+  if (recentEvents.length === 5) {
+    const allReceiveErrors = recentEvents.every(e => e.type === 'receive-error');
+    if (allReceiveErrors) {
+      reasons.push(`5 consecutive receive errors`);
+    }
+  }
+  
+  const last10 = appState.rallies.slice(-10);
+  let attacks = { k: 0, a: 0, e: 0 };
+  last10.forEach(r => {
+    if (r.tags.attack && r.tags.attack.team === 'us') {
+      attacks.a++;
+      if (r.tags.attack.result === 'kill') attacks.k++;
+      if (r.tags.attack.result === 'error') attacks.e++;
+    }
+  });
+  if (attacks.a > 0) {
+    const eff = (attacks.k - attacks.e) / attacks.a;
+    if (eff <= 0.0) reasons.push(`Attack efficiency ${eff.toFixed(3)} (last 10)`);
+  }
+  
+  return reasons.length > 0 ? reasons : null;
+}
+
+function generateRecommendations() {
+  const agg = computeAggregates();
+  const recs = [];
+  
+  const allRotationData = [];
+  Object.keys(agg.perSetRotation).forEach(setKey => {
+    const setNum = setKey.replace('Set', '');
+    Object.keys(agg.perSetRotation[setKey]).forEach(rot => {
+      const stats = agg.perSetRotation[setKey][rot];
+      if (stats.rallies >= 3) {
+        const sampleRally = appState.rallies.find(r => 
+          r.set === parseInt(setNum) && 
+          r.rotationAtRally.rotationIndex === parseInt(rot.replace('R', '')) - 1
+        );
+        
+        allRotationData.push({
+          rotation: rot,
+          set: setNum,
+          stats: stats,
+          lineup: sampleRally ? sampleRally.rotationAtRally.onCourt : null
+        });
+      }
+    });
+  });
+  
+  allRotationData.sort((a, b) => b.stats.plusMinus - a.stats.plusMinus);
+  
+  allRotationData.slice(0, 3).forEach((rotData, idx) => {
+    const reasons = [];
+    reasons.push(`Plus/Minus: ${rotData.stats.plusMinus > 0 ? '+' : ''}${rotData.stats.plusMinus}`);
+    if (parseFloat(rotData.stats.sideoutPct) > 50) reasons.push(`Strong sideout: ${rotData.stats.sideoutPct}%`);
+    if (parseFloat(rotData.stats.ueRate) < 10) reasons.push(`Low UE rate: ${rotData.stats.ueRate}%`);
+    if (parseFloat(rotData.stats.attackEff) > 0.2) reasons.push(`Good attack efficiency: ${rotData.stats.attackEff}`);
+    
+    // Add total team error count
+    const totalErrors = rotData.stats.teamErrors.receiveError + 
+                       rotData.stats.teamErrors.dtError + 
+                       rotData.stats.teamErrors.netTouch +
+                       rotData.stats.teamErrors.netError;
+    reasons.push(`Total team errors: ${totalErrors} (Rcv: ${rotData.stats.teamErrors.receiveError}, DT/C: ${rotData.stats.teamErrors.dtError}, Net Touch: ${rotData.stats.teamErrors.netTouch}, Over/Under: ${rotData.stats.teamErrors.netError})`);
+    
+    let lineupHTML = '';
+    if (rotData.lineup) {
+      const lineupNames = rotData.lineup.map((pid, pos) => {
+        if (!pid) return `P${pos + 1}: Empty`;
+        const player = appState.roster.find(p => p.id === pid);
+        return player ? `P${pos + 1}: #${player.number} ${player.name}` : `P${pos + 1}: Unknown`;
+      });
+      lineupHTML = `<div style="margin-top: 12px; padding: 12px; background: #0f172a; border-radius: 6px; font-size: 11px; line-height: 1.6;">
+        <div style="font-weight: 600; color: #3b82f6; margin-bottom: 6px;">Court Lineup:</div>
+        ${lineupNames.map(name => `<div style="color: #94a3b8;">${name}</div>`).join('')}
+      </div>`;
+    }
+    
+    recs.push({ 
+      title: `${idx + 1}. Start in ${rotData.rotation} (from Set ${rotData.set})`, 
+      reasons,
+      lineupHTML
+    });
+  });
+  
+  return recs;
+}
+
+function renderAll() {
+  renderScore();
+  renderMomentum();
+  renderRotationRing();
+  renderTeamStats();
+  renderRotationTable();
+  renderPlayerTable();
+  renderRecommendations();
+  renderMomentumChart();
+  renderMatchAwards();
+  renderPlayerAwards();
+}
+
+function renderScore() {
+  const scores = calculateCurrentScore();
+  document.getElementById('usScore').textContent = scores.us;
+  document.getElementById('themScore').textContent = scores.them;
+  document.getElementById('setInfo').textContent = `Set ${getCurrentSet()}`;
+  
+  // Update button score displays
+  document.getElementById('usScoreBtnDisplay').textContent = scores.us;
+  document.getElementById('themScoreBtnDisplay').textContent = scores.them;
+  
+  const setTracker = document.getElementById('setTracker');
+  setTracker.innerHTML = '';
+  
+  const currentSet = getCurrentSet();
+  const usSetWins = appState.sets.filter(s => s.winner === 'us').length;
+  const themSetWins = appState.sets.filter(s => s.winner === 'them').length;
+  
+  const setScoreDiv = document.createElement('div');
+  setScoreDiv.style.cssText = 'display: flex; align-items: center; gap: 12px; font-size: 42px; font-weight: 600;';
+  setScoreDiv.innerHTML = `
+    <span style="color: #4ade80;">Sets: ${usSetWins}</span>
+    <span style="color: #94a3b8;">-</span>
+    <span style="color: #f87171;">${themSetWins}</span>
+  `;
+  setTracker.appendChild(setScoreDiv);
+  
+  for (let i = 1; i <= 3; i++) {
+    const badge = document.createElement('div');
+    badge.className = 'set-badge';
+    
+    const completedSet = appState.sets.find(s => s.set === i);
+    if (completedSet) {
+      if (completedSet.winner === 'us') {
+        badge.classList.add('won');
+        badge.textContent = `Set ${i}: ${completedSet.scoreUs}-${completedSet.scoreThem}`;
+      } else {
+        badge.classList.add('lost');
+        badge.textContent = `Set ${i}: ${completedSet.scoreUs}-${completedSet.scoreThem}`;
+      }
+    } else if (i === currentSet) {
+      badge.classList.add('current');
+      badge.textContent = `Set ${i}: ${scores.us}-${scores.them} (Live)`;
+    } else {
+      badge.textContent = `Set ${i}: -`;
+    }
+    
+    setTracker.appendChild(badge);
+  }
+  
+  const winnerDiv = document.getElementById('matchWinner');
+  if (appState.matchWinner) {
+    const winnerName = appState.matchWinner === 'us' ? 
+      appState.meta.teamName : 
+      (appState.meta.opponent || 'Opponent');
+    winnerDiv.textContent = `${winnerName} wins the match ${usSetWins}-${themSetWins}!`;
+    winnerDiv.classList.remove('hidden');
+  } else {
+    winnerDiv.classList.add('hidden');
+  }
+}
+
+function renderMomentum() {
+  const momentum = getMomentumData();
+  const runInfo = document.getElementById('runInfo');
+  const momentumFill = document.getElementById('momentumFill');
+  
+  if (momentum.run > 0) {
+    const teamLabel = momentum.runTeam === 'us' ? 'Our' : 'Their';
+    runInfo.textContent = `${teamLabel} run: ${momentum.run}`;
+  } else {
+    runInfo.textContent = 'No run';
+  }
+  
+  let momentumPct = 50;
+  if (momentum.runTeam === 'us') {
+    momentumPct = 50 + Math.min(momentum.run * 5, 40);
+  } else if (momentum.runTeam === 'them') {
+    momentumPct = 50 - Math.min(momentum.run * 5, 40);
+  }
+  momentumFill.style.width = momentumPct + '%';
+  
+  const timeoutReasons = checkTimeoutRecommendation();
+  const alertDiv = document.getElementById('timeoutAlert');
+  if (timeoutReasons) {
+    alertDiv.textContent = `CONSIDER TIMEOUT: ${timeoutReasons.join(' | ')}`;
+    alertDiv.classList.remove('hidden');
+  } else {
+    alertDiv.classList.add('hidden');
+  }
+}
+
+function renderTeamStats() {
+  const agg = computeAggregates();
+  const teamTotals = {
+    serves: { att: 0, ace: 0, err: 0 },
+    attacks: { k: 0, a: 0, e: 0 },
+    digs: 0, blocks: 0, assists: 0, ue: 0
+  };
+  
+  Object.keys(agg.perPlayer).forEach(pid => {
+    const p = agg.perPlayer[pid];
+    teamTotals.serves.att += p.serves.att;
+    teamTotals.serves.ace += p.serves.ace;
+    teamTotals.serves.err += p.serves.err;
+    teamTotals.attacks.k += p.attacks.k;
+    teamTotals.attacks.a += p.attacks.a;
+    teamTotals.attacks.e += p.attacks.e;
+    teamTotals.digs += p.digs;
+    teamTotals.blocks += p.blocks;
+    teamTotals.assists += p.assists;
+    teamTotals.ue += p.ue;
+  });
+  
+  const attackEff = teamTotals.attacks.a > 0 ? 
+    (((teamTotals.attacks.k - teamTotals.attacks.e) / teamTotals.attacks.a) * 100).toFixed(1) + '%' : '0.0%';
+  const serveEff = teamTotals.serves.att > 0 ?
+    (((teamTotals.serves.ace - teamTotals.serves.err) / teamTotals.serves.att) * 100).toFixed(1) + '%' : '0.0%';
+  
+  // Calculate total team errors (UE)
+  const totalTeamErrors = agg.teamErrors.receiveError + agg.teamErrors.dtError + agg.teamErrors.netTouch + agg.teamErrors.netError;
+  
+  document.getElementById('teamStats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Kills</div><div class="stat-value">${teamTotals.attacks.k}</div></div>
+    <div class="stat-card"><div class="stat-label">Attack Eff</div><div class="stat-value">${attackEff}</div></div>
+    <div class="stat-card"><div class="stat-label">Aces</div><div class="stat-value">${teamTotals.serves.ace}</div></div>
+    <div class="stat-card"><div class="stat-label">Serve Eff</div><div class="stat-value">${serveEff}</div></div>
+    <div class="stat-card"><div class="stat-label">Digs</div><div class="stat-value">${teamTotals.digs}</div></div>
+    <div class="stat-card"><div class="stat-label">Blocks</div><div class="stat-value">${teamTotals.blocks}</div></div>
+    <div class="stat-card" style="border-left-color: #dc2626;"><div class="stat-label">UE</div><div class="stat-value">${totalTeamErrors}</div></div>
+    <div class="stat-card" style="border-left-color: #dc2626;"><div class="stat-label">Receive Errors</div><div class="stat-value">${agg.teamErrors.receiveError}</div></div>
+    <div class="stat-card" style="border-left-color: #dc2626;"><div class="stat-label">Double Touch/Carry</div><div class="stat-value">${agg.teamErrors.dtError}</div></div>
+    <div class="stat-card" style="border-left-color: #dc2626;"><div class="stat-label">Net Touch</div><div class="stat-value">${agg.teamErrors.netTouch}</div></div>
+    <div class="stat-card" style="border-left-color: #dc2626;"><div class="stat-label">Over/Under Net</div><div class="stat-value">${agg.teamErrors.netError}</div></div>
+  `;
+}
+
+function renderRotationTable() {
+  const agg = computeAggregates();
+  const container = document.getElementById('rotationTable');
+  container.innerHTML = '';
+  
+  const setKeys = Object.keys(agg.perSetRotation).sort();
+  setKeys.forEach(setKey => {
+    const setNum = setKey.replace('Set', '');
+    const setSection = document.createElement('div');
+    setSection.style.marginTop = setKeys.indexOf(setKey) === 0 ? '0' : '30px';
+    
+    const completedSet = appState.sets.find(s => s.set === parseInt(setNum));
+    const setStatus = completedSet ? 
+      ` - ${completedSet.winner === 'us' ? 'Won' : 'Lost'} (${completedSet.scoreUs}-${completedSet.scoreThem})` :
+      ' - In Progress';
+    
+    setSection.innerHTML = `<h4 style="margin: 20px 0 12px; color: #f59e0b; font-weight: bold;">Set ${setNum} Rotations${setStatus}</h4>`;
+    
+    const setTable = document.createElement('table');
+    setTable.style.width = '100%';
+    setTable.style.borderCollapse = 'collapse';
+    setTable.style.marginBottom = '12px';
+    setTable.innerHTML = `
+      <thead>
+        <tr>
+          <th>Rotation</th>
+          <th>+/-</th>
+          <th>Rallies</th>
+          <th>Sideout%</th>
+          <th>UE Rate</th>
+          <th>Atk Eff</th>
+          <th>Rcv Err</th>
+          <th>DT/Carry</th>
+          <th>Net Touch</th>
+          <th>Over/Under</th>
+        </tr>
+      </thead>
+      <tbody id="${setKey}Body"></tbody>
+    `;
+    setSection.appendChild(setTable);
+    container.appendChild(setSection);
+    
+    const setBody = document.getElementById(`${setKey}Body`);
+    for (let i = 0; i < 6; i++) {
+      const rot = `R${i + 1}`;
+      const stats = agg.perSetRotation[setKey][rot];
+      
+      if (stats.rallies === 0) continue;
+      
+      const tr = document.createElement('tr');
+      tr.style.cursor = 'pointer';
+      tr.innerHTML = `
+        <td><strong>${rot}</strong></td>
+        <td style="color: ${stats.plusMinus >= 0 ? '#4ade80' : '#f87171'}">${stats.plusMinus > 0 ? '+' : ''}${stats.plusMinus}</td>
+        <td>${stats.rallies}</td>
+        <td>${stats.sideoutPct}%</td>
+        <td>${stats.ueRate}%</td>
+        <td>${stats.attackEff}%</td>
+        <td style="color: #fca5a5;">${stats.teamErrors.receiveError}</td>
+        <td style="color: #fca5a5;">${stats.teamErrors.dtError}</td>
+        <td style="color: #fca5a5;">${stats.teamErrors.netTouch}</td>
+        <td style="color: #fca5a5;">${stats.teamErrors.netError}</td>
+      `;
+      setBody.appendChild(tr);
+    }
+  });
+}
+
+function renderPlayerTable() {
+  const agg = computeAggregates();
+  const tbody = document.querySelector('#playerTable tbody');
+  tbody.innerHTML = '';
+  
+  appState.roster.forEach(player => {
+    const stats = agg.perPlayer[player.id];
+    if (!stats) return;
+    
+    const serveEff = stats.serves.att > 0 ? 
+      (((stats.serves.ace - stats.serves.err) / stats.serves.att) * 100).toFixed(1) : '0.0';
+    
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>#${player.number} ${player.name}</strong></td>
+      <td>${stats.serves.ace}-${stats.serves.att}-${stats.serves.err}</td>
+      <td>${serveEff}%</td>
+      <td>${stats.attacks.k}-${stats.attacks.a}-${stats.attacks.e}</td>
+      <td>${stats.attacks.eff}%</td>
+      <td>${stats.digs}</td>
+      <td>${stats.blocks}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  
+  const unassigned = agg.perPlayer['unassigned'];
+  if (unassigned && (unassigned.serves.att > 0 || unassigned.attacks.a > 0 || unassigned.digs > 0)) {
+    const unassignedServeEff = unassigned.serves.att > 0 ? 
+      (((unassigned.serves.ace - unassigned.serves.err) / unassigned.serves.att) * 100).toFixed(1) : '0.0';
+    
+    const tr = document.createElement('tr');
+    tr.style.fontStyle = 'italic';
+    tr.style.color = '#94a3b8';
+    tr.innerHTML = `
+      <td><strong>Unassigned</strong></td>
+      <td>${unassigned.serves.ace}-${unassigned.serves.att}-${unassigned.serves.err}</td>
+      <td>${unassignedServeEff}%</td>
+      <td>${unassigned.attacks.k}-${unassigned.attacks.a}-${unassigned.attacks.e}</td>
+      <td>${unassigned.attacks.eff}%</td>
+      <td>${unassigned.digs}</td>
+      <td>${unassigned.blocks}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+
+function renderRecommendations() {
+  const recs = generateRecommendations();
+  const futureDiv = document.getElementById('futureRecs');
+  if (recs.length > 0) {
+    futureDiv.innerHTML = recs.map(rec => `
+      <div class="recommendation-box">
+        <div class="rec-title">${rec.title}</div>
+        <ul class="rec-list">${rec.reasons.map(r => `<li>${r}</li>`).join('')}</ul>
+        ${rec.lineupHTML || ''}
+      </div>
+    `).join('');
+  } else {
+    futureDiv.innerHTML = `
+      <p style="color: #94a3b8; text-align: center; padding: 20px;">
+        Need more data (≥3 rallies per rotation) to generate recommendations.
+      </p>
+    `;
+  }
+}
+
+function renderMatchAwards() {
+  const awardsDiv = document.getElementById('rotationAwards');
+  
+  if (appState.rallies.length === 0) {
+    awardsDiv.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">No match data available for awards yet.</p>';
+    return;
+  }
+  
+  const agg = computeAggregates();
+  const awards = [];
+  
+  // 1. The SWAT Team - Highest Attack Efficiency
+  // Check all sets and rotations for the best attack efficiency
+  let bestAttackEff = { rotation: null, set: null, eff: -999, lineup: null, kills: 0, errors: 0, attempts: 0 };
+  
+  Object.keys(agg.perSetRotation).forEach(setKey => {
+    const setNum = parseInt(setKey.replace('Set', ''));
+    Object.keys(agg.perSetRotation[setKey]).forEach(rot => {
+      const stats = agg.perSetRotation[setKey][rot];
+      if (stats.attacks.a >= 3) {
+        const eff = ((stats.attacks.k - stats.attacks.e) / stats.attacks.a) * 100;
+        if (eff > bestAttackEff.eff) {
+          const rotNum = parseInt(rot.replace('R', ''));
+          const rotationRally = appState.rallies.find(r => 
+            r.set === setNum && 
+            r.rotationAtRally && 
+            r.rotationAtRally.rotationIndex === (rotNum - 1)
+          );
+          
+          bestAttackEff = {
+            rotation: rot,
+            set: setNum,
+            eff: eff,
+            lineup: rotationRally ? rotationRally.rotationAtRally.onCourt : null,
+            kills: stats.attacks.k,
+            errors: stats.attacks.e,
+            attempts: stats.attacks.a
+          };
+        }
+      }
+    });
+  });
+  
+  if (bestAttackEff.rotation) {
+    awards.push({
+      title: '🎯 The SWAT Team',
+      subtitle: 'Precision over power.',
+      recognizes: 'Highest Attack Efficiency',
+      winner: bestAttackEff.rotation,
+      set: bestAttackEff.set,
+      stat: `${bestAttackEff.eff.toFixed(1)}%`,
+      detail: `${bestAttackEff.kills} Kills, ${bestAttackEff.errors} Errors on ${bestAttackEff.attempts} Attacks`,
+      lineup: bestAttackEff.lineup
+    });
+  }
+  
+  // 2. The Brick Squad - Most Blocks
+  // Check all sets and rotations for the most blocks
+  let bestBlocks = { rotation: null, set: null, blocks: 0, lineup: null };
+  
+  Object.keys(agg.perSetRotation).forEach(setKey => {
+    const setNum = parseInt(setKey.replace('Set', ''));
+    Object.keys(agg.perSetRotation[setKey]).forEach(rot => {
+      const stats = agg.perSetRotation[setKey][rot];
+      
+      // Calculate blocks from events for this rotation and set
+      let blockCount = 0;
+      appState.events.forEach(event => {
+        if (event.type === 'block' && 
+            event.set === setNum && 
+            event.rotationAtEvent && 
+            `R${event.rotationAtEvent.rotationIndex + 1}` === rot) {
+          blockCount++;
+        }
+      });
+      
+      if (blockCount > bestBlocks.blocks) {
+        const rotNum = parseInt(rot.replace('R', ''));
+        const rotationRally = appState.rallies.find(r => 
+          r.set === setNum && 
+          r.rotationAtRally && 
+          r.rotationAtRally.rotationIndex === (rotNum - 1)
+        );
+        
+        bestBlocks = {
+          rotation: rot,
+          set: setNum,
+          blocks: blockCount,
+          lineup: rotationRally ? rotationRally.rotationAtRally.onCourt : null
+        };
+      }
+    });
+  });
+  
+  if (bestBlocks.rotation && bestBlocks.blocks > 0) {
+    awards.push({
+      title: '🧱 The Brick Squad',
+      subtitle: 'Offense meets resistance.',
+      recognizes: 'Most Total Blocks',
+      winner: bestBlocks.rotation,
+      set: bestBlocks.set,
+      stat: `${bestBlocks.blocks} Blocks`,
+      detail: `Dominated the net in this rotation`,
+      lineup: bestBlocks.lineup
+    });
+  }
+  
+  // 3. The Marathon Masters - Longest Point Run
+  // Track runs per rotation per set
+  let bestRun = { rotation: null, set: null, run: 0, lineup: null };
+  const rotationRuns = {};
+  
+  appState.rallies.forEach((rally, idx) => {
+    if (!rally.rotationAtRally) return;
+    
+    const rotNum = rally.rotationAtRally.rotationIndex + 1;
+    const rotKey = `R${rotNum}`;
+    const setKey = `Set${rally.set}`;
+    const fullKey = `${setKey}-${rotKey}`;
+    
+    if (!rotationRuns[fullKey]) {
+      rotationRuns[fullKey] = { 
+        currentRun: 0, 
+        maxRun: 0, 
+        rotation: rotKey, 
+        set: rally.set 
+      };
+    }
+    
+    if (rally.pointTo === 'us') {
+      rotationRuns[fullKey].currentRun++;
+      if (rotationRuns[fullKey].currentRun > rotationRuns[fullKey].maxRun) {
+        rotationRuns[fullKey].maxRun = rotationRuns[fullKey].currentRun;
+      }
+    } else {
+      rotationRuns[fullKey].currentRun = 0;
+    }
+  });
+  
+  Object.keys(rotationRuns).forEach(key => {
+    const runData = rotationRuns[key];
+    if (runData.maxRun > bestRun.run) {
+      const rotNum = parseInt(runData.rotation.replace('R', ''));
+      const rotationRally = appState.rallies.find(r => 
+        r.set === runData.set && 
+        r.rotationAtRally && 
+        r.rotationAtRally.rotationIndex === (rotNum - 1)
+      );
+      
+      bestRun = {
+        rotation: runData.rotation,
+        set: runData.set,
+        run: runData.maxRun,
+        lineup: rotationRally ? rotationRally.rotationAtRally.onCourt : null
+      };
+    }
+  });
+  
+  if (bestRun.rotation && bestRun.run >= 3) {
+    awards.push({
+      title: '🏃 The Marathon Masters',
+      subtitle: 'Once they start, they don\'t stop.',
+      recognizes: 'Longest Point Run',
+      winner: bestRun.rotation,
+      set: bestRun.set,
+      stat: `${bestRun.run} Points`,
+      detail: `Unstoppable scoring streak`,
+      lineup: bestRun.lineup
+    });
+  }
+  
+  // Render awards
+  if (awards.length === 0) {
+    awardsDiv.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Not enough data to generate awards yet. Play more rallies to unlock awards!</p>';
+    return;
+  }
+  
+  awardsDiv.innerHTML = awards.map(award => {
+    let lineupHTML = '';
+    if (award.lineup && award.lineup.length === 6) {
+      const positions = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6'];
+      lineupHTML = `
+        <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-top: 12px;">
+          <div style="font-size: 12px; color: #94a3b8; margin-bottom: 8px; font-weight: 600;">LINEUP:</div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+            ${award.lineup.map((playerId, idx) => {
+              const player = appState.roster.find(p => p.id === playerId);
+              if (!player) return '';
+              return `
+                <div style="background: #1e293b; padding: 8px; border-radius: 6px; text-align: center;">
+                  <div style="font-size: 10px; color: #64748b; margin-bottom: 2px;">${positions[idx]}</div>
+                  <div style="font-size: 13px; font-weight: bold; color: #3b82f6;">#${player.number}</div>
+                  <div style="font-size: 11px; color: #e2e8f0;">${player.name.split(' ')[0]}</div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+    
+    return `
+      <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 20px; border-radius: 12px; margin-bottom: 16px; border-left: 4px solid #f59e0b;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+          <div style="font-size: 32px;">${award.title.split(' ')[0]}</div>
+          <div style="flex: 1;">
+            <div style="font-size: 18px; font-weight: bold; color: #fff;">${award.title.substring(award.title.indexOf(' ') + 1)}</div>
+            <div style="font-size: 13px; color: #94a3b8; font-style: italic;">${award.subtitle}</div>
+          </div>
+        </div>
+        
+        <div style="background: rgba(59, 130, 246, 0.1); padding: 10px; border-radius: 6px; margin-bottom: 12px; border-left: 3px solid #3b82f6;">
+          <div style="font-size: 13px; color: #60a5fa; font-weight: 600;">RECOGNIZES: ${award.recognizes}</div>
+        </div>
+        
+        <div style="background: #0f172a; padding: 12px; border-radius: 8px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 8px;">
+            <div>
+              <div style="font-size: 11px; color: #94a3b8; margin-bottom: 4px; text-transform: uppercase;">Rotation</div>
+              <div style="font-size: 22px; font-weight: bold; color: #f59e0b;">${award.winner.replace('R', '')}</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; color: #94a3b8; margin-bottom: 4px; text-transform: uppercase;">Set</div>
+              <div style="font-size: 22px; font-weight: bold; color: #f59e0b;">${award.set}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 11px; color: #94a3b8; margin-bottom: 4px; text-transform: uppercase;">Stat</div>
+              <div style="font-size: 22px; font-weight: 600; color: #4ade80;">${award.stat}</div>
+            </div>
+          </div>
+          <div style="font-size: 12px; color: #94a3b8; font-style: italic; margin-top: 8px; padding-top: 8px; border-top: 1px solid #1e293b;">
+            ${award.detail}
+          </div>
+        </div>
+        ${lineupHTML}
+      </div>
+    `;
+  }).join('');
+}
+
+function renderPlayerAwards() {
+  const awardsDiv = document.getElementById('playerAwards');
+  
+  if (appState.rallies.length === 0 || appState.roster.length === 0) {
+    awardsDiv.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">No player data available for awards yet.</p>';
+    return;
+  }
+  
+  const agg = computeAggregates();
+  const awards = [];
+  
+  // 1. The Terminator - Highest Attack Efficiency
+  let bestAttackEff = { players: [], eff: -999 };
+  
+  appState.roster.forEach(player => {
+    const stats = agg.perPlayer[player.id];
+    if (stats && stats.attacks.a >= 5) { // Minimum 5 attacks to qualify
+      const eff = ((stats.attacks.k - stats.attacks.e) / stats.attacks.a) * 100;
+      if (eff > bestAttackEff.eff) {
+        bestAttackEff = {
+          players: [{ 
+            player: player, 
+            kills: stats.attacks.k,
+            errors: stats.attacks.e,
+            attempts: stats.attacks.a
+          }],
+          eff: eff
+        };
+      } else if (Math.abs(eff - bestAttackEff.eff) < 0.01) { // Tie (within 0.01%)
+        bestAttackEff.players.push({
+          player: player,
+          kills: stats.attacks.k,
+          errors: stats.attacks.e,
+          attempts: stats.attacks.a
+        });
+      }
+    }
+  });
+  
+  if (bestAttackEff.players.length > 0) {
+    awards.push({
+      title: '🤖 The Terminator',
+      subtitle: 'They\'ll be back.',
+      recognizes: 'Highest Attack Efficiency',
+      winners: bestAttackEff.players,
+      stat: `${bestAttackEff.eff.toFixed(1)}%`,
+      getDetail: (w) => `${w.kills} Kills, ${w.errors} Errors on ${w.attempts} Attacks`
+    });
+  }
+  
+  // 2. The Iron Wall - Most Blocks
+  let bestBlocks = { players: [], blocks: 0 };
+  
+  appState.roster.forEach(player => {
+    const stats = agg.perPlayer[player.id];
+    if (stats && stats.blocks > 0) {
+      if (stats.blocks > bestBlocks.blocks) {
+        bestBlocks = {
+          players: [{ player: player }],
+          blocks: stats.blocks
+        };
+      } else if (stats.blocks === bestBlocks.blocks) { // Tie
+        bestBlocks.players.push({ player: player });
+      }
+    }
+  });
+  
+  if (bestBlocks.players.length > 0) {
+    awards.push({
+      title: '🛡️ The Iron Wall',
+      subtitle: 'An immovable force vs. moveable object.',
+      recognizes: 'Most Blocks',
+      winners: bestBlocks.players,
+      stat: `${bestBlocks.blocks} ${bestBlocks.blocks === 1 ? 'Block' : 'Blocks'}`,
+      getDetail: (w) => `Dominated at the net`
+    });
+  }
+  
+  // 3. The Top Gun - Most Aces
+  let bestAces = { players: [], aces: 0 };
+  
+  appState.roster.forEach(player => {
+    const stats = agg.perPlayer[player.id];
+    if (stats && stats.serves.ace > 0) {
+      if (stats.serves.ace > bestAces.aces) {
+        bestAces = {
+          players: [{ 
+            player: player, 
+            serves: stats.serves.att 
+          }],
+          aces: stats.serves.ace
+        };
+      } else if (stats.serves.ace === bestAces.aces) { // Tie
+        bestAces.players.push({ 
+          player: player, 
+          serves: stats.serves.att 
+        });
+      }
+    }
+  });
+  
+  if (bestAces.players.length > 0) {
+    awards.push({
+      title: '✈️ The Top Gun',
+      subtitle: 'Locked, loaded and delivered.',
+      recognizes: 'Most Ace Serves',
+      winners: bestAces.players,
+      stat: `${bestAces.aces} ${bestAces.aces === 1 ? 'Ace' : 'Aces'}`,
+      getDetail: (w) => w.serves ? `${w.serves} Total Serves` : 'Elite serving performance'
+    });
+  }
+  
+  // Render awards
+  if (awards.length === 0) {
+    awardsDiv.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Not enough data to generate player awards yet. Keep logging events!</p>';
+    return;
+  }
+  
+  awardsDiv.innerHTML = awards.map(award => {
+    const winnersHTML = award.winners.map(w => `
+      <div style="background: #0f172a; padding: 16px; border-radius: 8px; ${award.winners.length > 1 ? 'margin-bottom: 12px;' : ''}">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
+          <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #fff; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);">
+            #${w.player.number}
+          </div>
+          <div style="flex: 1;">
+            <div style="font-size: 11px; color: #94a3b8; margin-bottom: 4px; text-transform: uppercase;">${award.winners.length > 1 ? 'Co-Winner' : 'Winner'}</div>
+            <div style="font-size: 20px; font-weight: bold; color: #fff;">${w.player.name}</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 11px; color: #94a3b8; margin-bottom: 4px; text-transform: uppercase;">Stat</div>
+            <div style="font-size: 24px; font-weight: 600; color: #4ade80;">${award.stat}</div>
+          </div>
+        </div>
+        <div style="font-size: 12px; color: #94a3b8; font-style: italic; padding-top: 12px; border-top: 1px solid #1e293b;">
+          ${award.getDetail(w)}
+        </div>
+      </div>
+    `).join('');
+    
+    return `
+      <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 20px; border-radius: 12px; margin-bottom: 16px; border-left: 4px solid #22c55e;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+          <div style="font-size: 32px;">${award.title.split(' ')[0]}</div>
+          <div style="flex: 1;">
+            <div style="font-size: 18px; font-weight: bold; color: #fff;">${award.title.substring(award.title.indexOf(' ') + 1)}</div>
+            <div style="font-size: 13px; color: #94a3b8; font-style: italic;">${award.subtitle}</div>
+          </div>
+        </div>
+        
+        <div style="background: rgba(34, 197, 94, 0.1); padding: 10px; border-radius: 6px; margin-bottom: 12px; border-left: 3px solid #22c55e;">
+          <div style="font-size: 13px; color: #4ade80; font-weight: 600;">RECOGNIZES: ${award.recognizes}</div>
+        </div>
+        
+        ${award.winners.length > 1 ? `
+          <div style="background: rgba(251, 191, 36, 0.1); padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; border-left: 3px solid #fbbf24;">
+            <div style="font-size: 12px; color: #fbbf24; font-weight: 600;">🏆 ${award.winners.length}-WAY TIE</div>
+          </div>
+        ` : ''}
+        
+        ${winnersHTML}
+      </div>
+    `;
+  }).join('');
+}
+
+function renderMomentumChart() {
+  const container = document.getElementById('momentumChartsContainer');
+  container.innerHTML = '';
+  
+  if (appState.rallies.length === 0) {
+    container.innerHTML = '<p style="color: #64748b; text-align: center; padding: 40px;">No rally data yet</p>';
+    return;
+  }
+  
+  const ralliesBySet = {};
+  appState.rallies.forEach(rally => {
+    if (!ralliesBySet[rally.set]) {
+      ralliesBySet[rally.set] = [];
+    }
+    ralliesBySet[rally.set].push(rally);
+  });
+  
+  Object.keys(ralliesBySet).sort((a, b) => parseInt(a) - parseInt(b)).forEach(setNum => {
+    const setRallies = ralliesBySet[setNum];
+    
+    const setSection = document.createElement('div');
+    setSection.style.marginBottom = '30px';
+    
+    const completedSet = appState.sets.find(s => s.set === parseInt(setNum));
+    const setStatus = completedSet ? 
+      ` - ${completedSet.winner === 'us' ? 'Won' : 'Lost'} (${completedSet.scoreUs}-${completedSet.scoreThem})` :
+      ' - In Progress';
+    
+    const header = document.createElement('h4');
+    header.style.cssText = 'margin: 20px 0 12px; color: #f59e0b; font-weight: bold;';
+    header.textContent = `Set ${setNum} Momentum${setStatus}`;
+    setSection.appendChild(header);
+    
+    const chartContainer = document.createElement('div');
+    chartContainer.className = 'chart-container';
+    chartContainer.style.cssText = 'background: #0f172a; padding: 16px; border-radius: 8px; height: 300px; position: relative;';
+    
+    const canvas = document.createElement('canvas');
+    canvas.className = 'chart-canvas';
+    canvas.style.cssText = 'width: 100%; height: 100%;';
+    canvas.id = `momentumChart-set${setNum}`;
+    
+    chartContainer.appendChild(canvas);
+    setSection.appendChild(chartContainer);
+    container.appendChild(setSection);
+    
+    drawMomentumChart(canvas, setRallies, setNum);
+  });
+}
+
+function drawMomentumChart(canvas, rallies, setNum) {
+  const ctx = canvas.getContext('2d');
+  
+  const chartContainer = canvas.parentElement;
+  canvas.width = chartContainer.clientWidth - 32;
+  canvas.height = chartContainer.clientHeight - 32;
+  
+  if (rallies.length === 0) {
+    ctx.fillStyle = '#64748b';
+    ctx.font = '14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('No rally data for this set', canvas.width / 2, canvas.height / 2);
+    return;
+  }
+  
+  const data = [];
+  let cumulative = 0;
+  const rotationChanges = [];
+  
+  if (rallies.length > 0) {
+    rotationChanges.push({
+      x: 0,
+      rotation: rallies[0].rotationAtRally.rotationIndex,
+      isFirst: true
+    });
+  }
+  
+  let lastRotation = rallies[0].rotationAtRally.rotationIndex;
+  
+  rallies.forEach((rally, idx) => {
+    if (rally.pointTo === 'us') cumulative++;
+    else cumulative--;
+    data.push({ x: idx, y: cumulative, rally });
+    
+    if (rally.rotationAtRally.rotationIndex !== lastRotation) {
+      rotationChanges.push({
+        x: idx,
+        rotation: rally.rotationAtRally.rotationIndex,
+        isFirst: false
+      });
+      lastRotation = rally.rotationAtRally.rotationIndex;
+    }
+  });
+  
+  const padding = 40;
+  const graphWidth = canvas.width - padding * 2;
+  const graphHeight = canvas.height - padding * 2;
+  const maxY = Math.max(...data.map(d => Math.abs(d.y))) || 5;
+  const scaleX = graphWidth / (data.length - 1 || 1);
+  const scaleY = graphHeight / (maxY * 2);
+  
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  ctx.strokeStyle = '#334155';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(padding, padding);
+  ctx.lineTo(padding, canvas.height - padding);
+  ctx.stroke();
+  
+  const zeroY = padding + graphHeight / 2;
+  ctx.beginPath();
+  ctx.moveTo(padding, zeroY);
+  ctx.lineTo(canvas.width - padding, zeroY);
+  ctx.stroke();
+  
+  rotationChanges.forEach(change => {
+    const x = padding + change.x * scaleX;
+    
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(x, padding);
+    ctx.lineTo(x, canvas.height - padding);
+    ctx.stroke();
+    
+    ctx.fillStyle = '#ef4444';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`R${change.rotation + 1}`, x, padding - 5);
+    
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.arc(x, canvas.height - padding + 5, 4, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  
+  ctx.strokeStyle = '#3b82f6';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  
+  data.forEach((point, idx) => {
+    const x = padding + point.x * scaleX;
+    const y = zeroY - (point.y * scaleY);
+    
+    if (idx === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  });
+  
+  ctx.stroke();
+  
+  data.forEach(point => {
+    const x = padding + point.x * scaleX;
+    const y = zeroY - (point.y * scaleY);
+    
+    ctx.fillStyle = point.rally.pointTo === 'us' ? '#4ade80' : '#f87171';
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '12px sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('0', padding - 5, zeroY + 4);
+  ctx.fillText(`+${maxY}`, padding - 5, padding + 4);
+  ctx.fillText(`-${maxY}`, padding - 5, canvas.height - padding + 4);
+  ctx.textAlign = 'center';
+  ctx.fillText('Rally Progress', canvas.width / 2, canvas.height - 10);
+}
+
+function openRallyHistory() {
+  const list = document.getElementById('rallyHistoryList');
+  list.innerHTML = '';
+  
+  if (appState.rallies.length === 0) {
+    list.innerHTML = '<p style="color: #64748b; text-align: center; padding: 20px;">No rallies yet</p>';
+  } else {
+    [...appState.rallies].reverse().forEach((rally, idx) => {
+      const actualIdx = appState.rallies.length - 1 - idx;
+      const item = document.createElement('div');
+      item.className = 'rally-item';
+      
+      const tags = Object.keys(rally.tags).map(t => {
+        const tag = rally.tags[t];
+        let label = t.toUpperCase();
+        if (tag.playerId) {
+          const player = appState.roster.find(p => p.id === tag.playerId);
+          if (player) label += ` (#${player.number})`;
+        }
+        if (tag.result) label += ` - ${tag.result}`;
+        return label;
+      }).join(', ');
+      
+      item.innerHTML = `
+        <div class="rally-details">
+          <div><strong>Rally ${actualIdx + 1}</strong> - Set ${rally.set}</div>
+          <div style="color: ${rally.pointTo === 'us' ? '#4ade80' : '#f87171'}; font-size: 12px;">
+            ${rally.pointTo === 'us' ? 'Us' : 'Them'} scored (${rally.scoreAfter.us}-${rally.scoreAfter.them})
+          </div>
+          ${tags ? `<div style="font-size: 11px; color: #94a3b8;">${tags}</div>` : ''}
+        </div>
+      `;
+      
+      const actionsDiv = document.createElement('div');
+      actionsDiv.className = 'rally-actions';
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'btn btn-small btn-danger';
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.addEventListener('click', () => deleteRally(actualIdx));
+      actionsDiv.appendChild(deleteBtn);
+      item.appendChild(actionsDiv);
+      
+      list.appendChild(item);
+    });
+  }
+  
+  document.getElementById('historyModal').classList.add('active');
+}
+
+function deleteRally(index) {
+  const rally = appState.rallies[index];
+  if (!rally) return;
+  
+  rallyToDelete = index;
+  const rallyNum = index + 1;
+  const scoreText = `${rally.scoreAfter.us}-${rally.scoreAfter.them}`;
+  const teamText = rally.pointTo === 'us' ? 'Us' : 'Them';
+  
+  document.getElementById('deleteRallyMessage').textContent = 
+    `Delete Rally ${rallyNum}? (${teamText} scored, Score: ${scoreText})`;
+  document.getElementById('deleteRallyModal').classList.add('active');
+}
+
+function confirmDeleteRally() {
+  if (rallyToDelete === null) return;
+  
+  appState.rallies.splice(rallyToDelete, 1);
+  saveState();
+  renderAll();
+  openRallyHistory();
+  closeModal('deleteRallyModal');
+  rallyToDelete = null;
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove('active');
+}
+
+function openMatchSettings() {
+  document.getElementById('teamName').value = appState.meta.teamName;
+  document.getElementById('opponentName').value = appState.meta.opponent;
+  document.getElementById('matchModal').classList.add('active');
+}
+
+function saveMatchSettings() {
+  appState.meta.teamName = document.getElementById('teamName').value;
+  appState.meta.opponent = document.getElementById('opponentName').value;
+  saveState();
+  closeModal('matchModal');
+}
+
+function switchTab(tabName) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => {
+    if (t.dataset.tab === tabName) t.classList.add('active');
+  });
+  
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById(tabName + 'Tab').classList.add('active');
+  
+  if (tabName === 'team') renderMomentumChart();
+}
+
+function exportCSV() {
+  const agg = computeAggregates();
+  let csv = 'Volleyball Match Statistics\n\n';
+  csv += `Team: ${appState.meta.teamName}\n`;
+  csv += `Opponent: ${appState.meta.opponent}\n`;
+  csv += `Match ID: ${appState.meta.matchId}\n\n`;
+  
+  csv += 'SET SUMMARY\n';
+  csv += 'Set,Us,Them\n';
+  const currentSet = getCurrentSet();
+  for (let i = 1; i <= currentSet; i++) {
+    const setRallies = appState.rallies.filter(r => r.set === i);
+    const lastRally = setRallies[setRallies.length - 1];
+    if (lastRally) {
+      csv += `${i},${lastRally.scoreAfter.us},${lastRally.scoreAfter.them}\n`;
+    }
+  }
+  csv += '\n';
+  
+  csv += 'STARTING LINEUPS (R1) BY SET\n';
+  csv += 'Set,P1,P2,P3,P4,P5,P6,Libero\n';
+  for (let i = 1; i <= currentSet; i++) {
+    const setRallies = appState.rallies.filter(r => r.set === i);
+    // Find first rally with R1 (rotationIndex = 0)
+    const r1Rally = setRallies.find(r => r.rotationAtRally && r.rotationAtRally.rotationIndex === 0);
+    
+    if (r1Rally && r1Rally.rotationAtRally) {
+      const lineup = r1Rally.rotationAtRally.onCourt;
+      const libero = r1Rally.rotationAtRally.libero;
+      
+      const playerNames = lineup.map(pid => {
+        if (!pid) return 'Empty';
+        const player = appState.roster.find(p => p.id === pid);
+        return player ? `#${player.number} ${player.name}` : 'Unknown';
+      });
+      
+      const liberoName = libero ? (() => {
+        const player = appState.roster.find(p => p.id === libero);
+        return player ? `#${player.number} ${player.name}` : 'Unknown';
+      })() : 'None';
+      
+      csv += `${i},${playerNames[0]},${playerNames[1]},${playerNames[2]},${playerNames[3]},${playerNames[4]},${playerNames[5]},${liberoName}\n`;
+    } else {
+      csv += `${i},No R1 data,,,,,\n`;
+    }
+  }
+  csv += '\n';
+  
+  csv += 'TEAM STATISTICS\n';
+  const teamTotals = {
+    serves: { att: 0, ace: 0, err: 0 },
+    attacks: { k: 0, a: 0, e: 0 },
+    digs: 0, blocks: 0
+  };
+  
+  Object.keys(agg.perPlayer).forEach(pid => {
+    const p = agg.perPlayer[pid];
+    teamTotals.serves.att += p.serves.att;
+    teamTotals.serves.ace += p.serves.ace;
+    teamTotals.serves.err += p.serves.err;
+    teamTotals.attacks.k += p.attacks.k;
+    teamTotals.attacks.a += p.attacks.a;
+    teamTotals.attacks.e += p.attacks.e;
+    teamTotals.digs += p.digs;
+    teamTotals.blocks += p.blocks;
+  });
+  
+  const attackEff = teamTotals.attacks.a > 0 ? 
+    (((teamTotals.attacks.k - teamTotals.attacks.e) / teamTotals.attacks.a) * 100).toFixed(1) : '0.0';
+  const serveEff = teamTotals.serves.att > 0 ?
+    (((teamTotals.serves.ace - teamTotals.serves.err) / teamTotals.serves.att) * 100).toFixed(1) : '0.0';
+  const totalTeamErrors = agg.teamErrors.receiveError + agg.teamErrors.dtError + agg.teamErrors.netTouch + agg.teamErrors.netError;
+  
+  csv += 'Statistic,Value\n';
+  csv += `Kills,${teamTotals.attacks.k}\n`;
+  csv += `Attack Efficiency,${attackEff}%\n`;
+  csv += `Aces,${teamTotals.serves.ace}\n`;
+  csv += `Serve Efficiency,${serveEff}%\n`;
+  csv += `Digs,${teamTotals.digs}\n`;
+  csv += `Blocks,${teamTotals.blocks}\n`;
+  csv += `Total UE (Team Errors),${totalTeamErrors}\n`;
+  csv += `Receive Errors,${agg.teamErrors.receiveError}\n`;
+  csv += `Double Touch/Carry,${agg.teamErrors.dtError}\n`;
+  csv += `Net Touch,${agg.teamErrors.netTouch}\n`;
+  csv += `Over/Under Net,${agg.teamErrors.netError}\n`;
+  csv += '\n';
+  
+  csv += 'MOMENTUM DATA (Rally by Rally)\n';
+  csv += 'Rally #,Set,Point To,Score After (Us-Them),Run Length,Run Team\n';
+  let currentRun = 0;
+  let currentRunTeam = null;
+  
+  appState.rallies.forEach((rally, idx) => {
+    if (currentRunTeam === rally.pointTo) {
+      currentRun++;
+    } else {
+      currentRun = 1;
+      currentRunTeam = rally.pointTo;
+    }
+    
+    csv += `${idx + 1},${rally.set},${rally.pointTo === 'us' ? 'Us' : 'Them'},`;
+    csv += `${rally.scoreAfter.us}-${rally.scoreAfter.them},${currentRun},${currentRunTeam === 'us' ? 'Us' : 'Them'}\n`;
+  });
+  csv += '\n';
+  
+  csv += 'ROTATION ANALYSIS\n';
+  csv += 'Rotation,+/-,Rallies,Sideout%,UE Rate,Attack Eff\n';
+  Object.keys(agg.perRotation).forEach(rot => {
+    const r = agg.perRotation[rot];
+    csv += `${rot},${r.plusMinus},${r.rallies},${r.sideoutPct},${r.ueRate},${r.attackEff}\n`;
+  });
+  csv += '\n';
+  
+  csv += 'PLAYER STATISTICS\n';
+  csv += 'Number,Name,Serves,Aces,S-Errors,Attacks,Kills,A-Errors,Attack Eff,Digs,Blocks\n';
+  appState.roster.forEach(player => {
+    const stats = agg.perPlayer[player.id];
+    if (stats) {
+      csv += `${player.number},${player.name},${stats.serves.att},${stats.serves.ace},${stats.serves.err},`;
+      csv += `${stats.attacks.a},${stats.attacks.k},${stats.attacks.e},${stats.attacks.eff},`;
+      csv += `${stats.digs},${stats.blocks}\n`;
+    }
+  });
+  csv += '\n';
+  
+  csv += 'STAT DEFINITIONS\n\n';
+  
+  csv += 'TEAM STATISTICS DEFINITIONS\n';
+  csv += 'Kills,Successful attacks that result in an immediate point\n';
+  csv += 'Attack Efficiency,"((Kills - Errors) / Total Attempts) × 100; shown as percentage measuring attacking effectiveness"\n';
+  csv += 'Aces,Serves that land untouched for an immediate point\n';
+  csv += 'Serve Efficiency,"((Aces - Errors) / Total Attempts) × 100; shown as percentage measuring serving effectiveness"\n';
+  csv += 'Digs,Successful defensive plays that keep the ball in play\n';
+  csv += 'Blocks,Defensive plays at the net that stop opponent attacks\n';
+  csv += 'UE (Unforced Errors),Total of all team errors (Receive Errors + Double Touch/Carry + Net Touch + Over/Under Net)\n';
+  csv += 'Receive Errors,Service reception errors that result in a point for the opponent\n';
+  csv += 'Double Touch/Carry,Ball handling violations including double contacts or lifts/carries\n';
+  csv += 'Net Touch,Touching the net during play\n';
+  csv += 'Over/Under Net,Crossing over or under the net during play\n';
+  csv += '\n';
+  
+  csv += 'ROTATION ANALYSIS DEFINITIONS\n';
+  csv += 'Rotation,The position configuration (R1-R6) based on where the setter is located\n';
+  csv += '+/- (Plus/Minus),Point differential when in this rotation (positive is better)\n';
+  csv += 'Rallies,Total number of rallies played in this rotation\n';
+  csv += 'Sideout%,Percentage of times your team won the point after receiving serve\n';
+  csv += 'UE Rate,Percentage of rallies in this rotation that resulted in an unforced error\n';
+  csv += 'Attack Efficiency,"((Kills - Errors) / Total Attempts) × 100; shown as percentage for this rotation"\n';
+  csv += '\n';
+  
+  csv += 'PLAYER STATISTICS DEFINITIONS\n';
+  csv += 'Serves,Total number of serve attempts\n';
+  csv += 'Aces,Serves that land untouched for an immediate point\n';
+  csv += 'S-Errors,Service errors that result in point for opponent\n';
+  csv += 'Attacks,Total number of attack attempts\n';
+  csv += 'Kills,Successful attacks that result in an immediate point\n';
+  csv += 'A-Errors,Attack errors (hits into net or out of bounds)\n';
+  csv += 'Attack Eff,"((Kills - Errors) / Total Attempts) × 100; shown as percentage"\n';
+  csv += 'Digs,Successful defensive plays that keep the ball in play\n';
+  csv += 'Blocks,Defensive plays at the net that stop opponent attacks\n';
+  csv += '\n';
+  
+  csv += 'MOMENTUM DATA DEFINITIONS\n';
+  csv += 'Rally #,Sequential number of each rally in the match\n';
+  csv += 'Set,Which set the rally occurred in\n';
+  csv += 'Point To,Which team scored the point (Us or Them)\n';
+  csv += 'Score After,The score after the rally in Us-Them format\n';
+  csv += 'Run Length,Number of consecutive points scored by the same team\n';
+  csv += 'Run Team,Which team currently has the scoring run\n';
+  csv += '\n';
+  
+  csv += 'LINEUP POSITION DEFINITIONS\n';
+  csv += 'P1,Position 1 - Right Back (serves from this position)\n';
+  csv += 'P2,Position 2 - Right Front\n';
+  csv += 'P3,Position 3 - Middle Front\n';
+  csv += 'P4,Position 4 - Left Front\n';
+  csv += 'P5,Position 5 - Left Back\n';
+  csv += 'P6,Position 6 - Middle Back\n';
+  csv += 'Libero,Defensive specialist who can substitute freely for back row players\n';
+  
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `volleyball-match-${appState.meta.matchId}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function newMatch() {
+  const message = appState.matchWinner ? 
+    'This will reset all scores and stats but keep your roster.' :
+    'This will clear all current match data but keep your roster.';
+  
+  document.getElementById('newMatchMessage').textContent = message;
+  document.getElementById('newMatchModal').classList.add('active');
+}
+
+function confirmNewMatch() {
+  const roster = appState.roster;
+  const thresholds = appState.thresholds;
+  const teamName = appState.meta.teamName;
+  
+  appState = {
+    meta: {
+      teamName: teamName,
+      opponent: '',
+      matchId: Date.now().toString(36) + Math.random().toString(36).substr(2),
+      createdAt: new Date().toISOString()
+    },
+    roster: roster,
+    lineup: {
+      rotationIndex: 0,
+      onCourt: [null, null, null, null, null, null]
+    },
+    rallies: [],
+    events: [],
+    sets: [],
+    matchWinner: null,
+    thresholds: thresholds,
+    lastSelectedPlayer: null,
+    currentTags: {}
+  };
+  
+  saveState();
+  renderAll();
+  closeModal('newMatchModal');
+}
+
+function loadSampleData() {
+  appState.roster = [
+    { id: 'p1', number: '10', name: 'Sarah Johnson' },
+    { id: 'p2', number: '7', name: 'Emily Chen' },
+    { id: 'p3', number: '15', name: 'Maya Rodriguez' },
+    { id: 'p4', number: '3', name: 'Alex Kim' },
+    { id: 'p5', number: '12', name: 'Jordan Lee' },
+    { id: 'p6', number: '8', name: 'Taylor Brown' },
+    { id: 'p7', number: '21', name: 'Sam Patel' },
+    { id: 'p8', number: '5', name: 'Riley Martinez' },
+    { id: 'p9', number: '14', name: 'Casey Wong' },
+    { id: 'p10', number: '9', name: 'Morgan Davis' },
+    { id: 'p11', number: '6', name: 'Avery Thompson' },
+    { id: 'p12', number: '11', name: 'Dakota Wilson' }
+  ];
+  
+  appState.lineup.onCourt = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'];
+  appState.lineup.libero = 'p7';
+  appState.rallies = [];
+  appState.events = [];
+  appState.sets = [];
+  appState.matchWinner = null;
+  appState.meta.teamName = 'Sample Team';
+  appState.meta.opponent = 'Demo Opponents';
+  
+  let set1Lineup = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'];
+  let currentRotationIndex = 0;
+  
+  for (let i = 0; i < 48; i++) {
+    const currentUs = appState.rallies.filter(r => r.set === 1 && r.pointTo === 'us').length;
+    const currentThem = appState.rallies.filter(r => r.set === 1 && r.pointTo === 'them').length;
+    
+    if (currentUs === 25 && currentThem === 23) break;
+    
+    let pointTo;
+    if (currentUs < 25 && currentThem < 23) {
+      pointTo = Math.random() > 0.5 ? 'us' : 'them';
+    } else if (currentUs === 25) {
+      pointTo = 'them';
+    } else {
+      pointTo = 'us';
+    }
+    
+    const newUs = currentUs + (pointTo === 'us' ? 1 : 0);
+    const newThem = currentThem + (pointTo === 'them' ? 1 : 0);
+    
+    appState.rallies.push({
+      id: `rally_${Date.now()}_${i}`,
+      set: 1,
+      pointTo: pointTo,
+      tags: {},
+      rotationAtRally: {
+        rotationIndex: currentRotationIndex,
+        onCourt: [...set1Lineup]
+      },
+      scoreAfter: { us: newUs, them: newThem },
+      timestamp: new Date().toISOString()
+    });
+    
+    if (i % 4 === 3 && pointTo === 'us') {
+      currentRotationIndex = (currentRotationIndex + 1) % 6;
+      const temp = set1Lineup[0];
+      set1Lineup = [set1Lineup[1], set1Lineup[2], set1Lineup[3], set1Lineup[4], set1Lineup[5], temp];
+    }
+  }
+  
+  appState.sets.push({
+    set: 1,
+    winner: 'us',
+    scoreUs: 25,
+    scoreThem: 23
+  });
+  
+  let set2Lineup = ['p6', 'p1', 'p2', 'p3', 'p4', 'p5'];
+  currentRotationIndex = 0;
+  
+  for (let i = 0; i < 8; i++) {
+    const currentUs = appState.rallies.filter(r => r.set === 2 && r.pointTo === 'us').length;
+    const currentThem = appState.rallies.filter(r => r.set === 2 && r.pointTo === 'them').length;
+    
+    const pointTo = (currentUs < 5 && Math.random() > 0.4) ? 'us' : 'them';
+    const newUs = currentUs + (pointTo === 'us' ? 1 : 0);
+    const newThem = currentThem + (pointTo === 'them' ? 1 : 0);
+    
+    appState.rallies.push({
+      id: `rally_${Date.now()}_set2_${i}`,
+      set: 2,
+      pointTo: pointTo,
+      tags: {},
+      rotationAtRally: {
+        rotationIndex: currentRotationIndex,
+        onCourt: [...set2Lineup]
+      },
+      scoreAfter: { us: newUs, them: newThem },
+      timestamp: new Date().toISOString()
+    });
+    
+    if (i % 2 === 1 && pointTo === 'us') {
+      currentRotationIndex = (currentRotationIndex + 1) % 6;
+      const temp = set2Lineup[0];
+      set2Lineup = [set2Lineup[1], set2Lineup[2], set2Lineup[3], set2Lineup[4], set2Lineup[5], temp];
+    }
+  }
+  
+  appState.lineup.onCourt = [...set2Lineup];
+  appState.lineup.rotationIndex = currentRotationIndex;
+  
+  saveState();
+  renderAll();
+}
+
+function clearAllData() {
+  appState = {
+    meta: {
+      teamName: 'Our Team',
+      opponent: '',
+      matchId: Date.now().toString(36) + Math.random().toString(36).substr(2),
+      createdAt: new Date().toISOString()
+    },
+    roster: [],
+    lineup: {
+      rotationIndex: 0,
+      onCourt: [null, null, null, null, null, null]
+    },
+    rallies: [],
+    events: [],
+    sets: [],
+    matchWinner: null,
+    thresholds: { ...DEFAULT_THRESHOLDS },
+    lastSelectedPlayer: null,
+    currentTags: {}
+  };
+  
+  saveState();
+  renderAll();
+}
+
+function updateThreshold(type, value) {
+  appState.thresholds[type] = parseInt(value);
+  saveState();
+  renderAll();
+}
+
+window.addEventListener('DOMContentLoaded', init);
+window.addEventListener('resize', () => {
+  if (document.getElementById('teamTab').classList.contains('active')) {
+    renderMomentumChart();
+  }
+});
+</script>
+</body>
+</html>
