@@ -723,9 +723,232 @@ tr:hover {
     font-size: 14px;
   }
 }
+
+/* Hamburger Menu Styles */
+.hamburger-menu {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  cursor: pointer;
+  background: #1e293b;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid #3b82f6;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.hamburger-icon {
+  width: 30px;
+  height: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hamburger-icon span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: #3b82f6;
+  border-radius: 2px;
+}
+
+.menu-dropdown {
+  position: fixed;
+  top: 75px;
+  right: 20px;
+  background: #1e293b;
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  padding: 8px;
+  z-index: 999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  min-width: 150px;
+}
+
+.menu-dropdown.hidden {
+  display: none;
+}
+
+.menu-item {
+  padding: 12px 16px;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.menu-item:hover {
+  background: #334155;
+}
+
+.instructions-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.instructions-modal.hidden {
+  display: none;
+}
+
+.instructions-content {
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 2px solid #3b82f6;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+
+.instructions-content h2 {
+  color: #3b82f6;
+  margin-bottom: 16px;
+  font-size: 24px;
+}
+
+.instructions-content h3 {
+  color: #f59e0b;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.instructions-content p, .instructions-content ul {
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.instructions-content ul {
+  padding-left: 20px;
+}
+
+.instructions-content li {
+  margin-bottom: 8px;
+}
+
+.close-instructions-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.close-instructions-btn:hover {
+  background: #2563eb;
+}
+
 </style>
 </head>
 <body>
+
+<!-- Hamburger Menu -->
+<div class="hamburger-menu" id="hamburgerMenu">
+  <div class="hamburger-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<!-- Menu Dropdown -->
+<div class="menu-dropdown hidden" id="menuDropdown">
+  <div class="menu-item" id="instructionsMenuItem">Instructions</div>
+</div>
+
+<!-- Instructions Modal -->
+<div class="instructions-modal hidden" id="instructionsModal">
+  <div class="instructions-content">
+    <h2>📋 How to Use This App</h2>
+    
+    <h3>🎯 Quick Start Workflow</h3>
+    <p><strong>Follow these steps to get started:</strong></p>
+    <ol>
+      <li><strong>Create Your Roster:</strong> Click "Manage Roster" to add players with their jersey numbers and names.</li>
+      <li><strong>Set Starting Lineup:</strong> Assign 6 players to court positions (P1-P6) and optionally assign a Libero.</li>
+      <li><strong>Start Tracking:</strong> Begin logging points and player stats during the match!</li>
+    </ol>
+    
+    <h3>⚡ Scoring & Rotation</h3>
+    <ul>
+      <li><strong>Log Points:</strong> Click "Us" or "Them" buttons to score points</li>
+      <li><strong>Auto-Rotation:</strong> The lineup automatically rotates when you win a point after the opponent scored (sideout)</li>
+      <li><strong>Manual Rotation:</strong> Use the "Rotate ↻" button if needed to manually rotate the lineup</li>
+    </ul>
+    
+    <h3>📊 Player Stats Logging</h3>
+    <p><strong>Track individual player performance:</strong></p>
+    <ul>
+      <li><strong>Serve/Attack/Dig/Block:</strong> Click the action button, select the player, choose result → Auto-logs with green flash!</li>
+      <li><strong>Results:</strong>
+        <ul>
+          <li>Serve: Ace, Error, In</li>
+          <li>Attack: Kill, Error, Attempt</li>
+          <li>Dig: Success, No Success</li>
+          <li>Block: Stuff, Hands on/In Play</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <h3>🚫 Team Errors</h3>
+    <p><strong>Log team errors (no player assignment needed):</strong></p>
+    <ul>
+      <li><strong>Receive Error:</strong> Service reception error</li>
+      <li><strong>Double Touch/Carry:</strong> Ball handling violation</li>
+      <li><strong>Net Touch:</strong> Player touched the net</li>
+      <li><strong>Over/Under Net:</strong> Player crossed over/under the net</li>
+    </ul>
+    <p><em>Just click once - these log instantly!</em></p>
+    
+    <h3>📑 Understanding the Tabs</h3>
+    <ul>
+      <li><strong>Team Stats:</strong> Overall team performance (kills, aces, digs, blocks, errors)</li>
+      <li><strong>Rotations:</strong> Performance analysis for each rotation (R1-R6) by set</li>
+      <li><strong>Players:</strong> Individual player statistics and performance</li>
+      <li><strong>Recommendations:</strong> Identifies strongest/weakest rotations and suggests lineup adjustments</li>
+      <li><strong>Awards:</strong> Match awards for best rotations and top player performances</li>
+      <li><strong>Settings:</strong> Configure team name, opponent, export data, and timeout thresholds</li>
+    </ul>
+    
+    <h3>💾 Saving Your Data</h3>
+    <p><strong>All data is automatically saved to your browser's local storage.</strong> To export for analysis or archiving:</p>
+    <ul>
+      <li>Go to <strong>Settings Tab</strong> → Click <strong>Export CSV</strong></li>
+      <li>Opens in Excel/Google Sheets with complete match data, stats, and definitions</li>
+    </ul>
+    
+    <h3>⏱️ Timeout Alerts</h3>
+    <p>The app tracks momentum and suggests timeouts when:</p>
+    <ul>
+      <li>Opponent goes on a scoring run (default: 7+ points)</li>
+      <li>Your team commits multiple unforced errors (default: 4 UEs in 6 rallies)</li>
+    </ul>
+    <p><em>Customize thresholds in Settings tab.</em></p>
+    
+    <button class="close-instructions-btn" id="closeInstructionsBtn">Got It!</button>
+  </div>
+</div>
 
 <div class="team-banner">
   <img src="https://i.imgur.com/placeholder.png" alt="Chargers Volleyball" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -1159,6 +1382,14 @@ function setupEventListeners() {
   document.getElementById('runThreshold').addEventListener('change', (e) => updateThreshold('run', e.target.value));
   document.getElementById('ueThreshold').addEventListener('change', (e) => updateThreshold('ue', e.target.value));
   
+  // Hamburger menu listeners
+  document.getElementById('hamburgerMenu').addEventListener('click', toggleHamburgerMenu);
+  document.getElementById('instructionsMenuItem').addEventListener('click', openInstructions);
+  document.getElementById('closeInstructionsBtn').addEventListener('click', closeInstructions);
+  document.getElementById('instructionsModal').addEventListener('click', (e) => {
+    if (e.target.id === 'instructionsModal') closeInstructions();
+  });
+  
   document.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     if (e.key.toLowerCase() === 'u') scorePoint('us');
@@ -1169,6 +1400,12 @@ function setupEventListeners() {
   window.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal')) {
       e.target.classList.remove('active');
+    }
+    // Close hamburger dropdown if clicking outside
+    const hamburgerMenu = document.getElementById('hamburgerMenu');
+    const menuDropdown = document.getElementById('menuDropdown');
+    if (!hamburgerMenu.contains(e.target) && !menuDropdown.contains(e.target)) {
+      menuDropdown.classList.add('hidden');
     }
   });
 }
@@ -3233,6 +3470,20 @@ function exportCSV() {
   URL.revokeObjectURL(url);
 }
 
+function toggleHamburgerMenu() {
+  const dropdown = document.getElementById('menuDropdown');
+  dropdown.classList.toggle('hidden');
+}
+
+function openInstructions() {
+  document.getElementById('menuDropdown').classList.add('hidden');
+  document.getElementById('instructionsModal').classList.remove('hidden');
+}
+
+function closeInstructions() {
+  document.getElementById('instructionsModal').classList.add('hidden');
+}
+
 function newMatch() {
   const message = appState.matchWinner ? 
     'This will reset all scores and stats but keep your roster.' :
@@ -3301,6 +3552,104 @@ function loadSampleData() {
   let set1Lineup = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'];
   let currentRotationIndex = 0;
   
+  // Generate sample player events for Set 1
+  const sampleEvents = [
+    // Sarah Johnson (#10) - Strong hitter
+    { type: 'serve', playerId: 'p1', result: 'ace', set: 1, rotationIndex: 0 },
+    { type: 'serve', playerId: 'p1', result: 'in', set: 1, rotationIndex: 0 },
+    { type: 'attack', playerId: 'p1', result: 'kill', set: 1, rotationIndex: 1 },
+    { type: 'attack', playerId: 'p1', result: 'kill', set: 1, rotationIndex: 2 },
+    { type: 'attack', playerId: 'p1', result: 'attempt', set: 1, rotationIndex: 3 },
+    { type: 'dig', playerId: 'p1', result: 'success', set: 1, rotationIndex: 4 },
+    { type: 'block', playerId: 'p1', result: 'stuff', set: 1, rotationIndex: 0 },
+    
+    // Emily Chen (#7) - Good all-around
+    { type: 'serve', playerId: 'p2', result: 'ace', set: 1, rotationIndex: 1 },
+    { type: 'serve', playerId: 'p2', result: 'in', set: 1, rotationIndex: 1 },
+    { type: 'serve', playerId: 'p2', result: 'error', set: 1, rotationIndex: 1 },
+    { type: 'attack', playerId: 'p2', result: 'kill', set: 1, rotationIndex: 2 },
+    { type: 'attack', playerId: 'p2', result: 'attempt', set: 1, rotationIndex: 3 },
+    { type: 'dig', playerId: 'p2', result: 'success', set: 1, rotationIndex: 0 },
+    { type: 'dig', playerId: 'p2', result: 'success', set: 1, rotationIndex: 2 },
+    
+    // Maya Rodriguez (#15) - Setter with some attacks
+    { type: 'serve', playerId: 'p3', result: 'in', set: 1, rotationIndex: 2 },
+    { type: 'serve', playerId: 'p3', result: 'in', set: 1, rotationIndex: 2 },
+    { type: 'attack', playerId: 'p3', result: 'kill', set: 1, rotationIndex: 3 },
+    { type: 'attack', playerId: 'p3', result: 'attempt', set: 1, rotationIndex: 4 },
+    { type: 'dig', playerId: 'p3', result: 'success', set: 1, rotationIndex: 1 },
+    
+    // Alex Kim (#3) - Solid middle
+    { type: 'serve', playerId: 'p4', result: 'in', set: 1, rotationIndex: 3 },
+    { type: 'attack', playerId: 'p4', result: 'kill', set: 1, rotationIndex: 0 },
+    { type: 'attack', playerId: 'p4', result: 'kill', set: 1, rotationIndex: 1 },
+    { type: 'attack', playerId: 'p4', result: 'error', set: 1, rotationIndex: 2 },
+    { type: 'block', playerId: 'p4', result: 'stuff', set: 1, rotationIndex: 3 },
+    { type: 'block', playerId: 'p4', result: 'touch', set: 1, rotationIndex: 4 },
+    
+    // Jordan Lee (#12)
+    { type: 'serve', playerId: 'p5', result: 'ace', set: 1, rotationIndex: 4 },
+    { type: 'serve', playerId: 'p5', result: 'in', set: 1, rotationIndex: 4 },
+    { type: 'attack', playerId: 'p5', result: 'kill', set: 1, rotationIndex: 0 },
+    { type: 'attack', playerId: 'p5', result: 'attempt', set: 1, rotationIndex: 1 },
+    { type: 'dig', playerId: 'p5', result: 'success', set: 1, rotationIndex: 2 },
+    
+    // Taylor Brown (#8)
+    { type: 'serve', playerId: 'p6', result: 'in', set: 1, rotationIndex: 5 },
+    { type: 'serve', playerId: 'p6', result: 'error', set: 1, rotationIndex: 5 },
+    { type: 'attack', playerId: 'p6', result: 'kill', set: 1, rotationIndex: 3 },
+    { type: 'dig', playerId: 'p6', result: 'success', set: 1, rotationIndex: 4 },
+    { type: 'dig', playerId: 'p6', result: 'success', set: 1, rotationIndex: 5 },
+    
+    // Sam Patel (Libero #21)
+    { type: 'dig', playerId: 'p7', result: 'success', set: 1, rotationIndex: 0 },
+    { type: 'dig', playerId: 'p7', result: 'success', set: 1, rotationIndex: 1 },
+    { type: 'dig', playerId: 'p7', result: 'success', set: 1, rotationIndex: 2 },
+    { type: 'dig', playerId: 'p7', result: 'success', set: 1, rotationIndex: 3 }
+  ];
+  
+  // Add sample team errors
+  const sampleTeamErrors = [
+    { type: 'receiveError', set: 1, rotationIndex: 1 },
+    { type: 'receiveError', set: 1, rotationIndex: 3 },
+    { type: 'dtError', set: 1, rotationIndex: 2 },
+    { type: 'netTouch', set: 1, rotationIndex: 4 },
+    { type: 'netError', set: 1, rotationIndex: 0 }
+  ];
+  
+  // Add events to appState
+  sampleEvents.forEach((evt, idx) => {
+    appState.events.push({
+      id: `event_${Date.now()}_${idx}`,
+      set: evt.set,
+      type: evt.type,
+      playerId: evt.playerId,
+      result: evt.result,
+      rotationAtEvent: {
+        rotationIndex: evt.rotationIndex,
+        onCourt: [...set1Lineup],
+        libero: 'p7'
+      },
+      timestamp: new Date(Date.now() + idx * 1000).toISOString()
+    });
+  });
+  
+  // Add team errors to events
+  sampleTeamErrors.forEach((err, idx) => {
+    appState.events.push({
+      id: `team_error_${Date.now()}_${idx}`,
+      set: err.set,
+      type: err.type,
+      playerId: 'team-error',
+      rotationAtEvent: {
+        rotationIndex: err.rotationIndex,
+        onCourt: [...set1Lineup],
+        libero: 'p7'
+      },
+      timestamp: new Date(Date.now() + idx * 2000).toISOString()
+    });
+  });
+  
   for (let i = 0; i < 48; i++) {
     const currentUs = appState.rallies.filter(r => r.set === 1 && r.pointTo === 'us').length;
     const currentThem = appState.rallies.filter(r => r.set === 1 && r.pointTo === 'them').length;
@@ -3326,7 +3675,8 @@ function loadSampleData() {
       tags: {},
       rotationAtRally: {
         rotationIndex: currentRotationIndex,
-        onCourt: [...set1Lineup]
+        onCourt: [...set1Lineup],
+        libero: 'p7'
       },
       scoreAfter: { us: newUs, them: newThem },
       timestamp: new Date().toISOString()
@@ -3364,7 +3714,8 @@ function loadSampleData() {
       tags: {},
       rotationAtRally: {
         rotationIndex: currentRotationIndex,
-        onCourt: [...set2Lineup]
+        onCourt: [...set2Lineup],
+        libero: 'p7'
       },
       scoreAfter: { us: newUs, them: newThem },
       timestamp: new Date().toISOString()
