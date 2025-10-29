@@ -240,6 +240,11 @@ select.flash-success {
   font-size: 14px;
 }
 
+.btn-sm {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
 .quick-log {
   background: #1a1a2e;
   padding: 16px;
@@ -823,6 +828,7 @@ tr:hover {
     <ol>
       <li><strong>Create Your Roster:</strong> Click "Manage Roster" to add players with their jersey numbers and names.</li>
       <li><strong>Set Starting Lineup:</strong> Assign 6 players to court positions (P1-P6) and optionally assign a Libero.</li>
+      <li><strong>Save Your Roster (Optional):</strong> Go to Settings → Click "💾 Save Current Roster" to save up to 3 team rosters with lineups for quick access later.</li>
       <li><strong>Start Tracking:</strong> Begin logging points and player stats during the match!</li>
     </ol>
     
@@ -842,7 +848,7 @@ tr:hover {
           <li>Serve: Ace, Error, In</li>
           <li>Attack: Kill, Error, Attempt</li>
           <li>Dig: Success, No Success</li>
-          <li>Block: Stuff, Hands on/In Play</li>
+          <li>Block: Stuff, Hands on/In Play, Miss</li>
         </ul>
       </li>
     </ul>
@@ -867,11 +873,29 @@ tr:hover {
       <li><strong>Settings:</strong> Configure team name, opponent, export data, and timeout thresholds</li>
     </ul>
     
+    <h3>👥 Roster Management</h3>
+    <p><strong>Save and manage multiple team rosters:</strong></p>
+    <ul>
+      <li><strong>Save Current Roster:</strong> In Settings tab, click "💾 Save Current Roster" to save your current team with their lineup</li>
+      <li><strong>Load a Roster:</strong> Click "Load" next to any saved roster to switch to that team (clears current match data)</li>
+      <li><strong>Delete a Roster:</strong> Click "Delete" to remove a saved roster (cannot be undone)</li>
+      <li><strong>Perfect for:</strong> Coaches managing multiple teams (Varsity, JV, different age groups)</li>
+      <li><strong>Limit:</strong> Up to 3 saved rosters at a time</li>
+    </ul>
+    
     <h3>💾 Saving Your Data</h3>
-    <p><strong>All data is automatically saved to your browser's local storage.</strong> To export for analysis or archiving:</p>
+    <p><strong>Save Rosters:</strong></p>
+    <ul>
+      <li>Save up to <strong>3 rosters</strong> with lineups in the <strong>Settings Tab</strong></li>
+      <li>Each saved roster includes: all players, court positions, and libero assignment</li>
+      <li><strong>Load</strong> a saved roster to start a new match with that team (clears match data)</li>
+      <li><strong>Delete</strong> old rosters to make room for new ones</li>
+    </ul>
+    <p><strong>Export Match Data:</strong></p>
     <ul>
       <li>Go to <strong>Settings Tab</strong> → Click <strong>Export CSV</strong></li>
       <li>Opens in Excel/Google Sheets with complete match data, stats, and definitions</li>
+      <li>All match data is automatically saved to your browser's local storage</li>
     </ul>
     
     <h3>⏱️ Timeout Alerts</h3>
@@ -896,6 +920,15 @@ tr:hover {
 
 <div class="main-content">
 
+<div style="background: #0f172a; padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid #3b82f6; cursor: pointer;" id="instructionsBarBtn">
+  <div style="font-size: 14px; font-weight: 600; color: #3b82f6; text-align: center;">
+    📋 INSTRUCTIONS
+  </div>
+  <div style="font-size: 11px; color: #94a3b8; text-align: center; margin-top: 4px;">
+    Tap to view app guide
+  </div>
+</div>
+
 <div class="header">
   <div class="set-tracker" id="setTracker"></div>
   <div id="matchWinner" class="match-winner hidden"></div>
@@ -918,15 +951,6 @@ tr:hover {
     <button class="btn btn-primary" id="newMatchMainBtn" style="width: 100%; padding: 12px; font-size: 15px;">
       New Match
     </button>
-  </div>
-  
-  <div style="background: #0f172a; padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid #3b82f6; cursor: pointer;" id="instructionsBarBtn">
-    <div style="font-size: 14px; font-weight: 600; color: #3b82f6; text-align: center;">
-      📋 INSTRUCTIONS
-    </div>
-    <div style="font-size: 11px; color: #94a3b8; text-align: center; margin-top: 4px;">
-      Tap to view app guide
-    </div>
   </div>
   
   <div class="tag-grid">
@@ -1016,7 +1040,8 @@ tr:hover {
       <p style="margin-bottom: 6px;"><strong>Aces:</strong> Serves that land untouched for an immediate point.</p>
       <p style="margin-bottom: 6px;"><strong>Serve Eff:</strong> ((Aces - Errors) / Total Attempts) × 100; shown as a percentage measuring serving effectiveness.</p>
       <p style="margin-bottom: 6px;"><strong>Digs:</strong> Successful defensive plays that keep the ball in play.</p>
-      <p style="margin-bottom: 6px;"><strong>Blocks:</strong> Defensive plays at the net that stop opponent attacks.</p>
+      <p style="margin-bottom: 6px;"><strong>Blocks:</strong> Successful defensive plays at the net (Stuff or Hands on/In Play). Block misses are tracked but do not count toward block totals.</p>
+      <p style="margin-bottom: 6px;"><strong>Block Eff:</strong> (Successful Blocks / Total Block Attempts) × 100; shown as a percentage measuring blocking effectiveness.</p>
       <p style="margin-bottom: 6px;"><strong>UE (Unforced Errors):</strong> Total of all team errors (Receive Errors + Double Touch/Carry + Net Touch + Over/Under Net).</p>
       <p style="margin-bottom: 6px;"><strong>Receive Errors:</strong> Service reception errors that result in a point for the opponent.</p>
       <p style="margin-bottom: 6px;"><strong>Double Touch/Carry:</strong> Ball handling violations including double contacts or lifts/carries.</p>
@@ -1075,7 +1100,7 @@ tr:hover {
       <p style="margin-bottom: 6px;"><strong>Attacks (K-A-E):</strong> Kills, total attempts, and errors for attacks. Note: Kills and errors automatically count as attempts.</p>
       <p style="margin-bottom: 6px;"><strong>Atk Eff (Attack Efficiency):</strong> ((Kills - Errors) / Total Attempts) × 100; shown as a percentage measuring attacking effectiveness.</p>
       <p style="margin-bottom: 6px;"><strong>Digs:</strong> Successful defensive plays that kept the ball alive.</p>
-      <p style="margin-bottom: 6px;"><strong>Blocks:</strong> Successful blocks at the net against opponent attacks.</p>
+      <p style="margin-bottom: 6px;"><strong>Blocks:</strong> Successful blocks at the net (Stuff or Hands on/In Play). Block misses are tracked but do not count toward block totals.</p>
       <p style="margin-bottom: 6px;"><strong>Unassigned:</strong> Events recorded without a specific player assignment (still count toward team totals).</p>
       <p style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #334155; font-style: italic;"><strong>Note:</strong> Player stats are logged independently using the event log system and are tracked separately from scoring.</p>
     </div>
@@ -1102,6 +1127,15 @@ tr:hover {
 </div>
 
 <div id="settingsTab" class="tab-content">
+  <h3 style="margin-bottom: 12px;">Saved Rosters</h3>
+  <div style="background: #1e293b; padding: 16px; border-radius: 8px; margin-bottom: 16px; border-left: 3px solid #22c55e;">
+    <div style="font-size: 13px; color: #94a3b8; margin-bottom: 12px;">
+      Save up to 3 rosters with lineups. Load a saved roster to start a new match with that team.
+    </div>
+    <div id="savedRostersList"></div>
+    <button class="btn btn-success" id="saveCurrentRosterBtn" style="width: 100%; margin-top: 12px;">💾 Save Current Roster</button>
+  </div>
+  
   <h3 style="margin-bottom: 12px;">Match Settings</h3>
   <button class="btn btn-primary" id="matchSettingsBtn" style="width: 100%; margin-bottom: 12px;">Edit Match Info</button>
   <button class="btn" id="newMatchBtn" style="width: 100%; margin-bottom: 12px;">New Match (Keep Roster)</button>
@@ -1149,6 +1183,12 @@ tr:hover {
     <div class="modal-header">
       <h2 class="modal-title">Match Settings</h2>
       <button class="close-btn" id="closeMatchModal">&times;</button>
+    </div>
+    
+    <div id="matchModalInfo" style="background: #0f172a; padding: 12px; border-radius: 6px; margin-bottom: 12px; border-left: 3px solid #3b82f6; display: none;">
+      <div style="font-size: 13px; color: #94a3b8;">
+        ✓ Roster loaded! Team name is set. Please enter the opponent name to continue.
+      </div>
     </div>
     
     <div class="form-group">
@@ -1219,11 +1259,22 @@ tr:hover {
       <button class="close-btn" id="closeNewMatchModal">&times;</button>
     </div>
     <p id="newMatchMessage" style="margin: 20px 0; color: #94a3b8;"></p>
+    
+    <div style="margin: 16px 0;">
+      <div class="form-group">
+        <label class="form-label">Team Name</label>
+        <input type="text" class="form-input" id="newMatchTeamName" placeholder="Your team name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Opponent</label>
+        <input type="text" class="form-input" id="newMatchOpponent" placeholder="Opponent team name">
+      </div>
+    </div>
+    
     <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin: 12px 0;">
       <div style="font-weight: 600; margin-bottom: 8px; color: #4ade80;">Will be preserved:</div>
       <ul style="margin: 0; padding-left: 20px; color: #94a3b8; font-size: 13px;">
         <li>All players in roster</li>
-        <li>Team name</li>
         <li>Settings & thresholds</li>
       </ul>
       <div style="font-weight: 600; margin: 12px 0 8px; color: #f87171;">Will be cleared:</div>
@@ -1241,9 +1292,56 @@ tr:hover {
   </div>
 </div>
 
+<div id="saveRosterModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Save Roster</h2>
+      <button class="close-btn" id="closeSaveRosterModal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Roster Name</label>
+        <input type="text" class="form-input" id="rosterNameInput" placeholder="e.g., Varsity A Team, JV Squad">
+      </div>
+      <div style="background: #0f172a; padding: 12px; border-radius: 6px; margin: 12px 0; border-left: 3px solid #3b82f6;">
+        <div style="font-size: 12px; color: #94a3b8;">
+          <strong>This will save:</strong>
+          <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+            <li>All players in current roster</li>
+            <li>Current court lineup (P1-P6)</li>
+            <li>Libero assignment</li>
+          </ul>
+        </div>
+      </div>
+      <div id="saveRosterSlotInfo" style="margin-bottom: 12px;"></div>
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <button class="btn btn-success" id="confirmSaveRosterBtn" style="flex: 1;">💾 Save</button>
+      <button class="btn" id="cancelSaveRosterBtn" style="flex: 1;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="confirmActionModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title" id="confirmActionTitle">Confirm Action</h2>
+    </div>
+    <div class="modal-body">
+      <p id="confirmActionMessage" style="color: #fff; margin-bottom: 16px;"></p>
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <button class="btn btn-primary" id="confirmActionYesBtn" style="flex: 1;">Confirm</button>
+      <button class="btn" id="confirmActionNoBtn" style="flex: 1;">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const STORAGE_KEY = 'vb-dashboard-data';
+const SAVED_ROSTERS_KEY = 'vb-saved-rosters';
 const DEFAULT_THRESHOLDS = { run: 7, ue: 5 };
+const MAX_SAVED_ROSTERS = 3;
 
 let appState = {
   meta: {
@@ -1295,6 +1393,12 @@ function setupEventListeners() {
   document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
   document.getElementById('confirmDeleteRallyBtn').addEventListener('click', confirmDeleteRally);
   document.getElementById('confirmNewMatchBtn').addEventListener('click', confirmNewMatch);
+  
+  // Saved roster listeners
+  document.getElementById('saveCurrentRosterBtn').addEventListener('click', openSaveRosterModal);
+  document.getElementById('closeSaveRosterModal').addEventListener('click', () => closeModal('saveRosterModal'));
+  document.getElementById('cancelSaveRosterBtn').addEventListener('click', () => closeModal('saveRosterModal'));
+  document.getElementById('confirmSaveRosterBtn').addEventListener('click', confirmSaveRoster);
   
   document.querySelectorAll('.tag-btn').forEach(btn => {
     btn.addEventListener('click', () => toggleTag(btn.dataset.tag));
@@ -1558,10 +1662,14 @@ function toggleTag(tagType) {
     });
   } else if (tagType === 'block') {
     resultSelect.classList.remove('hidden');
-    ['stuff', 'hands-on'].forEach(r => {
+    ['stuff', 'hands-on', 'miss'].forEach(r => {
       const opt = document.createElement('option');
       opt.value = r;
-      opt.textContent = r === 'hands-on' ? 'Hands on/In Play' : r.charAt(0).toUpperCase() + r.slice(1);
+      if (r === 'hands-on') {
+        opt.textContent = 'Hands on/In Play';
+      } else {
+        opt.textContent = r.charAt(0).toUpperCase() + r.slice(1);
+      }
       resultSelect.appendChild(opt);
     });
   }
@@ -1892,14 +2000,18 @@ function computeAggregates() {
     agg.perPlayer[p.id] = {
       serves: { att: 0, ace: 0, err: 0 },
       attacks: { k: 0, a: 0, e: 0, eff: 0 },
-      digs: 0, blocks: 0, assists: 0, ue: 0
+      digs: 0, 
+      blocks: { successful: 0, attempts: 0, eff: 0 },
+      assists: 0, ue: 0
     };
   });
   
   agg.perPlayer['unassigned'] = {
     serves: { att: 0, ace: 0, err: 0 },
     attacks: { k: 0, a: 0, e: 0, eff: 0 },
-    digs: 0, blocks: 0, assists: 0, ue: 0
+    digs: 0,
+    blocks: { successful: 0, attempts: 0, eff: 0 },
+    assists: 0, ue: 0
   };
   
   agg.teamErrors = {
@@ -2060,7 +2172,14 @@ function computeAggregates() {
         pStats.digs++;
       }
     }
-    if (event.type === 'block') pStats.blocks++;
+    if (event.type === 'block') {
+      // Count all block attempts
+      pStats.blocks.attempts++;
+      // Only count successful blocks (stuff or hands-on), not misses
+      if (!event.result || event.result === 'stuff' || event.result === 'hands-on') {
+        pStats.blocks.successful++;
+      }
+    }
     if (event.type === 'assist') pStats.assists++;
     if (event.type === 'ue') {
       pStats.ue++;
@@ -2073,6 +2192,9 @@ function computeAggregates() {
     const p = agg.perPlayer[pid];
     if (p.attacks.a > 0) {
       p.attacks.eff = (((p.attacks.k - p.attacks.e) / p.attacks.a) * 100).toFixed(1);
+    }
+    if (p.blocks.attempts > 0) {
+      p.blocks.eff = ((p.blocks.successful / p.blocks.attempts) * 100).toFixed(1);
     }
   });
   
@@ -2253,6 +2375,7 @@ function renderAll() {
   renderMomentumChart();
   renderMatchAwards();
   renderPlayerAwards();
+  renderRosterList();
 }
 
 function renderScore() {
@@ -2351,7 +2474,9 @@ function renderTeamStats() {
   const teamTotals = {
     serves: { att: 0, ace: 0, err: 0 },
     attacks: { k: 0, a: 0, e: 0 },
-    digs: 0, blocks: 0, assists: 0, ue: 0
+    digs: 0, 
+    blocks: { successful: 0, attempts: 0 },
+    assists: 0, ue: 0
   };
   
   Object.keys(agg.perPlayer).forEach(pid => {
@@ -2363,7 +2488,8 @@ function renderTeamStats() {
     teamTotals.attacks.a += p.attacks.a;
     teamTotals.attacks.e += p.attacks.e;
     teamTotals.digs += p.digs;
-    teamTotals.blocks += p.blocks;
+    teamTotals.blocks.successful += p.blocks.successful;
+    teamTotals.blocks.attempts += p.blocks.attempts;
     teamTotals.assists += p.assists;
     teamTotals.ue += p.ue;
   });
@@ -2372,6 +2498,8 @@ function renderTeamStats() {
     (((teamTotals.attacks.k - teamTotals.attacks.e) / teamTotals.attacks.a) * 100).toFixed(1) + '%' : '0.0%';
   const serveEff = teamTotals.serves.att > 0 ?
     (((teamTotals.serves.ace - teamTotals.serves.err) / teamTotals.serves.att) * 100).toFixed(1) + '%' : '0.0%';
+  const blockEff = teamTotals.blocks.attempts > 0 ?
+    ((teamTotals.blocks.successful / teamTotals.blocks.attempts) * 100).toFixed(1) + '%' : '0.0%';
   
   // Calculate total team errors (UE)
   const totalTeamErrors = agg.teamErrors.receiveError + agg.teamErrors.dtError + agg.teamErrors.netTouch + agg.teamErrors.netError;
@@ -2382,7 +2510,8 @@ function renderTeamStats() {
     <div class="stat-card"><div class="stat-label">Aces</div><div class="stat-value">${teamTotals.serves.ace}</div></div>
     <div class="stat-card"><div class="stat-label">Serve Eff</div><div class="stat-value">${serveEff}</div></div>
     <div class="stat-card"><div class="stat-label">Digs</div><div class="stat-value">${teamTotals.digs}</div></div>
-    <div class="stat-card"><div class="stat-label">Blocks</div><div class="stat-value">${teamTotals.blocks}</div></div>
+    <div class="stat-card"><div class="stat-label">Blocks</div><div class="stat-value">${teamTotals.blocks.successful}</div></div>
+    <div class="stat-card"><div class="stat-label">Block Eff</div><div class="stat-value">${blockEff}</div></div>
     <div class="stat-card" style="border-left-color: #dc2626;"><div class="stat-label">UE</div><div class="stat-value">${totalTeamErrors}</div></div>
     <div class="stat-card" style="border-left-color: #dc2626;"><div class="stat-label">Receive Errors</div><div class="stat-value">${agg.teamErrors.receiveError}</div></div>
     <div class="stat-card" style="border-left-color: #dc2626;"><div class="stat-label">Double Touch/Carry</div><div class="stat-value">${agg.teamErrors.dtError}</div></div>
@@ -2479,7 +2608,7 @@ function renderPlayerTable() {
       <td>${stats.attacks.k}-${stats.attacks.a}-${stats.attacks.e}</td>
       <td>${stats.attacks.eff}%</td>
       <td>${stats.digs}</td>
-      <td>${stats.blocks}</td>
+      <td>${stats.blocks.successful}</td>
     `;
     tbody.appendChild(tr);
   });
@@ -2499,7 +2628,7 @@ function renderPlayerTable() {
       <td>${unassigned.attacks.k}-${unassigned.attacks.a}-${unassigned.attacks.e}</td>
       <td>${unassigned.attacks.eff}%</td>
       <td>${unassigned.digs}</td>
-      <td>${unassigned.blocks}</td>
+      <td>${unassigned.blocks.successful}</td>
     `;
     tbody.appendChild(tr);
   }
@@ -2596,7 +2725,8 @@ function renderMatchAwards() {
         if (event.type === 'block' && 
             event.set === setNum && 
             event.rotationAtEvent && 
-            `R${event.rotationAtEvent.rotationIndex + 1}` === rot) {
+            `R${event.rotationAtEvent.rotationIndex + 1}` === rot &&
+            (!event.result || event.result === 'stuff' || event.result === 'hands-on')) {
           blockCount++;
         }
       });
@@ -2820,13 +2950,13 @@ function renderPlayerAwards() {
   
   appState.roster.forEach(player => {
     const stats = agg.perPlayer[player.id];
-    if (stats && stats.blocks > 0) {
-      if (stats.blocks > bestBlocks.blocks) {
+    if (stats && stats.blocks.successful > 0) {
+      if (stats.blocks.successful > bestBlocks.blocks) {
         bestBlocks = {
           players: [{ player: player }],
-          blocks: stats.blocks
+          blocks: stats.blocks.successful
         };
-      } else if (stats.blocks === bestBlocks.blocks) { // Tie
+      } else if (stats.blocks.successful === bestBlocks.blocks) { // Tie
         bestBlocks.players.push({ player: player });
       }
     }
@@ -3185,16 +3315,65 @@ function closeModal(modalId) {
   document.getElementById(modalId).classList.remove('active');
 }
 
-function openMatchSettings() {
+function openModal(modalId) {
+  document.getElementById(modalId).classList.add('active');
+}
+
+// Custom confirm function that uses modal instead of native confirm()
+function customConfirm(title, message) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('confirmActionModal');
+    const titleEl = document.getElementById('confirmActionTitle');
+    const messageEl = document.getElementById('confirmActionMessage');
+    const yesBtn = document.getElementById('confirmActionYesBtn');
+    const noBtn = document.getElementById('confirmActionNoBtn');
+    
+    titleEl.textContent = title;
+    messageEl.innerHTML = message.replace(/\n/g, '<br>');
+    
+    // Remove old event listeners by cloning and replacing
+    const newYesBtn = yesBtn.cloneNode(true);
+    const newNoBtn = noBtn.cloneNode(true);
+    yesBtn.parentNode.replaceChild(newYesBtn, yesBtn);
+    noBtn.parentNode.replaceChild(newNoBtn, noBtn);
+    
+    newYesBtn.addEventListener('click', () => {
+      closeModal('confirmActionModal');
+      resolve(true);
+    });
+    
+    newNoBtn.addEventListener('click', () => {
+      closeModal('confirmActionModal');
+      resolve(false);
+    });
+    
+    openModal('confirmActionModal');
+  });
+}
+
+function openMatchSettings(showRosterLoadedMessage = false) {
   document.getElementById('teamName').value = appState.meta.teamName;
   document.getElementById('opponentName').value = appState.meta.opponent;
+  
+  const infoMsg = document.getElementById('matchModalInfo');
+  if (showRosterLoadedMessage) {
+    infoMsg.style.display = 'block';
+    // Focus on opponent field since team name is already set
+    setTimeout(() => {
+      document.getElementById('opponentName').focus();
+    }, 100);
+  } else {
+    infoMsg.style.display = 'none';
+  }
+  
   document.getElementById('matchModal').classList.add('active');
 }
 
 function saveMatchSettings() {
-  appState.meta.teamName = document.getElementById('teamName').value;
-  appState.meta.opponent = document.getElementById('opponentName').value;
+  appState.meta.teamName = document.getElementById('teamName').value.trim() || 'Our Team';
+  appState.meta.opponent = document.getElementById('opponentName').value.trim();
   saveState();
+  renderAll();
   closeModal('matchModal');
 }
 
@@ -3208,16 +3387,27 @@ function switchTab(tabName) {
   document.getElementById(tabName + 'Tab').classList.add('active');
   
   if (tabName === 'team') renderMomentumChart();
+  if (tabName === 'settings') renderSavedRostersList();
 }
 
 function exportCSV() {
   const agg = computeAggregates();
   let csv = 'Volleyball Match Statistics\n\n';
-  csv += `Team: ${appState.meta.teamName}\n`;
+  csv += '=== MATCH INFORMATION ===\n';
+  csv += `Team Name: ${appState.meta.teamName}\n`;
   csv += `Opponent: ${appState.meta.opponent}\n`;
-  csv += `Match ID: ${appState.meta.matchId}\n\n`;
+  csv += `Match ID: ${appState.meta.matchId}\n`;
+  csv += `Match Date: ${new Date(appState.meta.createdAt).toLocaleString()}\n`;
+  csv += `Total Players in Roster: ${appState.roster.length}\n\n`;
   
-  csv += 'SET SUMMARY\n';
+  csv += '=== CURRENT ROSTER ===\n';
+  csv += 'Number,Name\n';
+  appState.roster.forEach(player => {
+    csv += `${player.number},${player.name}\n`;
+  });
+  csv += '\n';
+  
+  csv += '=== SET SUMMARY ===\n';
   csv += 'Set,Us,Them\n';
   const currentSet = getCurrentSet();
   for (let i = 1; i <= currentSet; i++) {
@@ -3229,7 +3419,7 @@ function exportCSV() {
   }
   csv += '\n';
   
-  csv += 'STARTING LINEUPS (R1) BY SET\n';
+  csv += '=== STARTING LINEUPS (R1) BY SET ===\n';
   csv += 'Set,P1,P2,P3,P4,P5,P6,Libero\n';
   for (let i = 1; i <= currentSet; i++) {
     const setRallies = appState.rallies.filter(r => r.set === i);
@@ -3258,11 +3448,12 @@ function exportCSV() {
   }
   csv += '\n';
   
-  csv += 'TEAM STATISTICS\n';
+  csv += '=== TEAM STATISTICS ===\n';
   const teamTotals = {
     serves: { att: 0, ace: 0, err: 0 },
     attacks: { k: 0, a: 0, e: 0 },
-    digs: 0, blocks: 0
+    digs: 0, 
+    blocks: { successful: 0, attempts: 0 }
   };
   
   Object.keys(agg.perPlayer).forEach(pid => {
@@ -3274,13 +3465,16 @@ function exportCSV() {
     teamTotals.attacks.a += p.attacks.a;
     teamTotals.attacks.e += p.attacks.e;
     teamTotals.digs += p.digs;
-    teamTotals.blocks += p.blocks;
+    teamTotals.blocks.successful += p.blocks.successful;
+    teamTotals.blocks.attempts += p.blocks.attempts;
   });
   
   const attackEff = teamTotals.attacks.a > 0 ? 
     (((teamTotals.attacks.k - teamTotals.attacks.e) / teamTotals.attacks.a) * 100).toFixed(1) : '0.0';
   const serveEff = teamTotals.serves.att > 0 ?
     (((teamTotals.serves.ace - teamTotals.serves.err) / teamTotals.serves.att) * 100).toFixed(1) : '0.0';
+  const blockEff = teamTotals.blocks.attempts > 0 ?
+    ((teamTotals.blocks.successful / teamTotals.blocks.attempts) * 100).toFixed(1) : '0.0';
   const totalTeamErrors = agg.teamErrors.receiveError + agg.teamErrors.dtError + agg.teamErrors.netTouch + agg.teamErrors.netError;
   
   csv += 'Statistic,Value\n';
@@ -3289,7 +3483,8 @@ function exportCSV() {
   csv += `Aces,${teamTotals.serves.ace}\n`;
   csv += `Serve Efficiency,${serveEff}%\n`;
   csv += `Digs,${teamTotals.digs}\n`;
-  csv += `Blocks,${teamTotals.blocks}\n`;
+  csv += `Blocks,${teamTotals.blocks.successful}\n`;
+  csv += `Block Efficiency,${blockEff}%\n`;
   csv += `Total UE (Team Errors),${totalTeamErrors}\n`;
   csv += `Receive Errors,${agg.teamErrors.receiveError}\n`;
   csv += `Double Touch/Carry,${agg.teamErrors.dtError}\n`;
@@ -3297,7 +3492,7 @@ function exportCSV() {
   csv += `Over/Under Net,${agg.teamErrors.netError}\n`;
   csv += '\n';
   
-  csv += 'MOMENTUM DATA (Rally by Rally)\n';
+  csv += '=== MOMENTUM DATA (Rally by Rally) ===\n';
   csv += 'Rally #,Set,Point To,Score After (Us-Them),Run Length,Run Team\n';
   let currentRun = 0;
   let currentRunTeam = null;
@@ -3315,7 +3510,7 @@ function exportCSV() {
   });
   csv += '\n';
   
-  csv += 'ROTATION ANALYSIS\n';
+  csv += '=== ROTATION ANALYSIS ===\n';
   csv += 'Rotation,+/-,Rallies,Sideout%,UE Rate,Attack Eff\n';
   Object.keys(agg.perRotation).forEach(rot => {
     const r = agg.perRotation[rot];
@@ -3323,19 +3518,19 @@ function exportCSV() {
   });
   csv += '\n';
   
-  csv += 'PLAYER STATISTICS\n';
+  csv += '=== PLAYER STATISTICS ===\n';
   csv += 'Number,Name,Serves,Aces,S-Errors,Attacks,Kills,A-Errors,Attack Eff,Digs,Blocks\n';
   appState.roster.forEach(player => {
     const stats = agg.perPlayer[player.id];
     if (stats) {
       csv += `${player.number},${player.name},${stats.serves.att},${stats.serves.ace},${stats.serves.err},`;
       csv += `${stats.attacks.a},${stats.attacks.k},${stats.attacks.e},${stats.attacks.eff},`;
-      csv += `${stats.digs},${stats.blocks}\n`;
+      csv += `${stats.digs},${stats.blocks.successful}\n`;
     }
   });
   csv += '\n';
   
-  csv += 'STAT DEFINITIONS\n\n';
+  csv += '=== STAT DEFINITIONS ===\n\n';
   
   csv += 'TEAM STATISTICS DEFINITIONS\n';
   csv += 'Kills,Successful attacks that result in an immediate point\n';
@@ -3343,7 +3538,8 @@ function exportCSV() {
   csv += 'Aces,Serves that land untouched for an immediate point\n';
   csv += 'Serve Efficiency,"((Aces - Errors) / Total Attempts) × 100; shown as percentage measuring serving effectiveness"\n';
   csv += 'Digs,Successful defensive plays that keep the ball in play\n';
-  csv += 'Blocks,Defensive plays at the net that stop opponent attacks\n';
+  csv += 'Blocks,"Successful defensive plays at the net (Stuff or Hands on/In Play). Block misses are tracked but do not count toward block totals."\n';
+  csv += 'Block Efficiency,"(Successful Blocks / Total Block Attempts) × 100; shown as percentage measuring blocking effectiveness"\n';
   csv += 'UE (Unforced Errors),Total of all team errors (Receive Errors + Double Touch/Carry + Net Touch + Over/Under Net)\n';
   csv += 'Receive Errors,Service reception errors that result in a point for the opponent\n';
   csv += 'Double Touch/Carry,Ball handling violations including double contacts or lifts/carries\n';
@@ -3369,7 +3565,7 @@ function exportCSV() {
   csv += 'A-Errors,Attack errors (hits into net or out of bounds)\n';
   csv += 'Attack Eff,"((Kills - Errors) / Total Attempts) × 100; shown as percentage"\n';
   csv += 'Digs,Successful defensive plays that keep the ball in play\n';
-  csv += 'Blocks,Defensive plays at the net that stop opponent attacks\n';
+  csv += 'Blocks,"Successful defensive plays at the net (Stuff or Hands on/In Play). Block misses are tracked but do not count toward block totals."\n';
   csv += '\n';
   
   csv += 'MOMENTUM DATA DEFINITIONS\n';
@@ -3394,7 +3590,13 @@ function exportCSV() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `volleyball-match-${appState.meta.matchId}.csv`;
+  
+  // Create a clean filename with team name and date
+  const teamName = appState.meta.teamName.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+  const opponent = appState.meta.opponent ? appState.meta.opponent.replace(/[^a-z0-9]/gi, '-').toLowerCase() : 'opponent';
+  const date = new Date(appState.meta.createdAt).toISOString().split('T')[0];
+  a.download = `${teamName}-vs-${opponent}-${date}.csv`;
+  
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -3407,24 +3609,264 @@ function closeInstructions() {
   document.getElementById('instructionsModal').classList.add('hidden');
 }
 
+function getSavedRosters() {
+  try {
+    const saved = localStorage.getItem(SAVED_ROSTERS_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch (e) {
+    console.error('Error loading saved rosters:', e);
+    return [];
+  }
+}
+
+function saveSavedRosters(rosters) {
+  try {
+    localStorage.setItem(SAVED_ROSTERS_KEY, JSON.stringify(rosters));
+  } catch (e) {
+    console.error('Error saving rosters:', e);
+    alert('Error saving roster. Storage may be full.');
+  }
+}
+
+function renderSavedRostersList() {
+  const rosters = getSavedRosters();
+  const container = document.getElementById('savedRostersList');
+  
+  if (rosters.length === 0) {
+    container.innerHTML = '<div style="color: #94a3b8; font-size: 13px; text-align: center; padding: 12px;">No saved rosters yet</div>';
+    return;
+  }
+  
+  container.innerHTML = rosters.map((roster, idx) => `
+    <div style="background: #0f172a; padding: 12px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <div style="font-weight: 600; color: #fff; margin-bottom: 4px;">${roster.name}</div>
+        <div style="font-size: 12px; color: #94a3b8;">${roster.roster.length} players • Saved ${new Date(roster.savedAt).toLocaleDateString()}</div>
+      </div>
+      <div style="display: flex; gap: 6px;">
+        <button class="btn btn-sm btn-primary roster-load-btn" data-index="${idx}" style="font-size: 12px; padding: 6px 12px;">Load</button>
+        <button class="btn btn-sm btn-danger roster-delete-btn" data-index="${idx}" style="font-size: 12px; padding: 6px 12px;">Delete</button>
+      </div>
+    </div>
+  `).join('');
+  
+  // Add event listeners after HTML is rendered
+  document.querySelectorAll('.roster-load-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const index = parseInt(this.getAttribute('data-index'));
+      console.log('Load button clicked for index:', index);
+      loadSavedRoster(index);
+    });
+  });
+  
+  document.querySelectorAll('.roster-delete-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const index = parseInt(this.getAttribute('data-index'));
+      console.log('Delete button clicked for index:', index);
+      deleteSavedRoster(index);
+    });
+  });
+}
+
+function openSaveRosterModal() {
+  const rosters = getSavedRosters();
+  const slotInfo = document.getElementById('saveRosterSlotInfo');
+  
+  if (rosters.length >= MAX_SAVED_ROSTERS) {
+    slotInfo.innerHTML = `
+      <div style="background: #7f1d1d; padding: 12px; border-radius: 6px; border-left: 3px solid #dc2626;">
+        <div style="font-size: 13px; color: #fca5a5;">
+          <strong>⚠️ Maximum rosters saved (${MAX_SAVED_ROSTERS}/${MAX_SAVED_ROSTERS})</strong><br>
+          Delete a roster before saving a new one.
+        </div>
+      </div>
+    `;
+    document.getElementById('confirmSaveRosterBtn').disabled = true;
+  } else {
+    slotInfo.innerHTML = `
+      <div style="background: #064e3b; padding: 12px; border-radius: 6px; border-left: 3px solid #22c55e;">
+        <div style="font-size: 13px; color: #86efac;">
+          <strong>✓ Slot available (${rosters.length}/${MAX_SAVED_ROSTERS} used)</strong>
+        </div>
+      </div>
+    `;
+    document.getElementById('confirmSaveRosterBtn').disabled = false;
+  }
+  
+  document.getElementById('rosterNameInput').value = '';
+  openModal('saveRosterModal');
+}
+
+function confirmSaveRoster() {
+  const name = document.getElementById('rosterNameInput').value.trim();
+  
+  if (!name) {
+    alert('Please enter a roster name');
+    return;
+  }
+  
+  const rosters = getSavedRosters();
+  
+  if (rosters.length >= MAX_SAVED_ROSTERS) {
+    alert('Maximum rosters reached. Delete one first.');
+    return;
+  }
+  
+  const savedRoster = {
+    name: name,
+    roster: JSON.parse(JSON.stringify(appState.roster)),
+    lineup: JSON.parse(JSON.stringify(appState.lineup)),
+    savedAt: new Date().toISOString()
+  };
+  
+  rosters.push(savedRoster);
+  saveSavedRosters(rosters);
+  
+  closeModal('saveRosterModal');
+  renderSavedRostersList();
+  
+  alert(`✓ Roster "${name}" saved successfully!`);
+}
+
+async function loadSavedRoster(index) {
+  console.log('loadSavedRoster called with index:', index);
+  const rosters = getSavedRosters();
+  console.log('Available rosters count:', rosters.length);
+  console.log('Available rosters:', JSON.stringify(rosters, null, 2));
+  
+  if (index < 0 || index >= rosters.length) {
+    alert('Invalid roster');
+    return;
+  }
+  
+  const roster = rosters[index];
+  console.log('Loading roster:', JSON.stringify(roster, null, 2));
+  console.log('Roster has', roster.roster.length, 'players');
+  
+  const confirmResult = await customConfirm(
+    'Load Roster?',
+    `Load roster "${roster.name}"?\n\nThis will:\n• Replace current roster and lineup\n• Clear match data (scores, stats, events)\n• Keep saved rosters`
+  );
+  
+  console.log('Confirm dialog result:', confirmResult);
+  
+  if (!confirmResult) {
+    console.log('User cancelled load');
+    return;
+  }
+  
+  console.log('User confirmed - proceeding with load');
+  console.log('BEFORE LOAD - appState.roster:', JSON.stringify(appState.roster, null, 2));
+  
+  // Clear match data but load saved roster
+  appState.roster = JSON.parse(JSON.stringify(roster.roster));
+  appState.lineup = JSON.parse(JSON.stringify(roster.lineup));
+  appState.rallies = [];
+  appState.events = [];
+  appState.sets = [];
+  appState.matchWinner = null;
+  appState.meta.teamName = roster.name;
+  appState.meta.opponent = '';
+  appState.meta.matchId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+  appState.meta.createdAt = new Date().toISOString();
+  appState.currentTags = {};
+  appState.lastSelectedPlayer = null;
+  
+  console.log('AFTER LOAD - appState.roster:', JSON.stringify(appState.roster, null, 2));
+  console.log('AFTER LOAD - appState.lineup:', JSON.stringify(appState.lineup, null, 2));
+  
+  saveState();
+  console.log('State saved to localStorage');
+  
+  renderAll();
+  console.log('renderAll() completed');
+  
+  // Force update player selects in case they're visible
+  const tagPlayer = document.getElementById('tagPlayer');
+  if (tagPlayer) {
+    console.log('Updating tagPlayer select dropdown');
+    tagPlayer.innerHTML = '<option value="">Select Player (Optional)</option>';
+    appState.roster.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = `#${p.number} ${p.name}`;
+      tagPlayer.appendChild(opt);
+    });
+  }
+  
+  console.log('Load complete!');
+  
+  // Prompt user to set match info (team name is already set from roster name)
+  // Open match settings modal to set opponent
+  setTimeout(() => {
+    openMatchSettings(true);
+  }, 100);
+}
+
+async function deleteSavedRoster(index) {
+  console.log('deleteSavedRoster called with index:', index);
+  const rosters = getSavedRosters();
+  console.log('Current rosters:', JSON.stringify(rosters, null, 2));
+  
+  if (index < 0 || index >= rosters.length) {
+    console.log('Invalid index:', index, 'rosters.length:', rosters.length);
+    alert('Invalid roster');
+    return;
+  }
+  
+  const roster = rosters[index];
+  console.log('Deleting roster:', JSON.stringify(roster, null, 2));
+  
+  const confirmed = await customConfirm(
+    'Delete Roster?',
+    `Delete roster "${roster.name}"?\n\nThis cannot be undone.`
+  );
+  
+  console.log('User confirmation result:', confirmed);
+  
+  if (!confirmed) {
+    console.log('User cancelled delete');
+    return;
+  }
+  
+  rosters.splice(index, 1);
+  console.log('After splice, rosters:', JSON.stringify(rosters, null, 2));
+  
+  saveSavedRosters(rosters);
+  console.log('Saved rosters to localStorage');
+  
+  renderSavedRostersList();
+  console.log('Rendered saved rosters list');
+  
+  alert(`✓ Roster "${roster.name}" deleted.`);
+}
+
 function newMatch() {
   const message = appState.matchWinner ? 
     'This will reset all scores and stats but keep your roster.' :
     'This will clear all current match data but keep your roster.';
   
   document.getElementById('newMatchMessage').textContent = message;
+  
+  // Pre-populate with current values
+  document.getElementById('newMatchTeamName').value = appState.meta.teamName || '';
+  document.getElementById('newMatchOpponent').value = appState.meta.opponent || '';
+  
   document.getElementById('newMatchModal').classList.add('active');
 }
 
 function confirmNewMatch() {
   const roster = appState.roster;
   const thresholds = appState.thresholds;
-  const teamName = appState.meta.teamName;
+  
+  // Get team name and opponent from inputs
+  const teamName = document.getElementById('newMatchTeamName').value.trim() || 'Our Team';
+  const opponent = document.getElementById('newMatchOpponent').value.trim() || '';
   
   appState = {
     meta: {
       teamName: teamName,
-      opponent: '',
+      opponent: opponent,
       matchId: Date.now().toString(36) + Math.random().toString(36).substr(2),
       createdAt: new Date().toISOString()
     },
